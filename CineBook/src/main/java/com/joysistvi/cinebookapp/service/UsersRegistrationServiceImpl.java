@@ -18,9 +18,10 @@ public class UsersRegistrationServiceImpl implements UsersRegistrationService {
     }
 
     @Override
-    public boolean registerUser(String name, String email, String password_hash, String role) {
+    public boolean deleteUser(int id) {
         return false;
     }
+
 
     @Override
     public UsersRegistration login(String email, String password_hash) {
@@ -28,12 +29,7 @@ public class UsersRegistrationServiceImpl implements UsersRegistrationService {
     }
 
     @Override
-    public boolean deleteUser(int id) {
-        return false;
-    }
-
-    @Override
-    public boolean registerUser(String name, String email, String password) {
-        return false;
+    public boolean registerUser(String name, String email, String password_hash) {
+        return usersRegistrationRepo.registerUser(name, email, password_hash);
     }
 }

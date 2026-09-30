@@ -7,12 +7,6 @@ public class UsersRegistration {
     private String password_hash;
     private String role;
 
-    private enum role {
-        ADMIN,
-        CUSTOMER
-    }
-
-    ;
 
     public UsersRegistration(int id, String name, String email, String password_hash, String role) {
         this.id = id;

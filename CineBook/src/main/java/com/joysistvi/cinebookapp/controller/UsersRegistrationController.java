@@ -11,13 +11,17 @@ public class UsersRegistrationController {
     public UsersRegistrationController(UsersRegistrationService usersRegistrationService) {
         this.usersRegistrationService = usersRegistrationService;
     }
+    public enum Role {
+        CUSTOMER,
+        ADMIN
+    }
 
     public List<UsersRegistration> handleViewAllUsers() {
         return usersRegistrationService.getAllUsers();
     }
 
-    public boolean handleRegister(String username,String email, String password) {
-        return usersRegistrationService.registerUser(username,email, password);
+    public boolean handleRegister(String name,String email, String password_hash) {
+        return usersRegistrationService.registerUser(name,email, password_hash);
     }
 
     public UsersRegistration handleLogin(String username, String password) {

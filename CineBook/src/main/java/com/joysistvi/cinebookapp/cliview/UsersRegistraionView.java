@@ -17,8 +17,8 @@ public class UsersRegistraionView {
         this.scanner = scanner;
     }
 
-    public boolean runUsers(){
-        viewAllUsers();
+    public boolean runUserRegistration(){
+        handleUsersRegistration(scanner , usersRegistrationController);
         return false;
     }
 
@@ -44,5 +44,40 @@ public class UsersRegistraionView {
         }
 
         System.out.println(border);
+    }
+
+    private void handleUsersRegistration(Scanner scanner, UsersRegistrationController usersRegistrationController){
+        clearScreen();
+
+        System.out.println("\n --- REGISTER ---\n");
+        System.out.println("Name: ");
+        String name = scanner.nextLine();
+        System.out.println("Email: ");
+        String email = scanner.nextLine();
+        System.out.println("Password: ");
+        String password_hash = scanner.nextLine();
+
+        boolean success = usersRegistrationController.handleRegister(name, email, password_hash);
+        System.out.println(success
+                ? "Registered successfully! You can now log in."
+                : "Failed to register.");
+        scanner.nextLine();
+
+    }
+
+    private static void clearScreen() {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            // Fallback if the process can't be started
+            System.out.println("\n".repeat(50));
+        }
+
+
     }
 }

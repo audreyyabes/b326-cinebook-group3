@@ -20,7 +20,7 @@ public class App {
         UsersRegistrationController usersRegistrationController = new UsersRegistrationController(usersRegistrationService);
         UsersRegistraionView usersRegistraionView = new UsersRegistraionView(usersRegistrationController, scanner);
 
-        usersRegistraionView.runUsers();
+        //usersRegistraionView.runUserRegistration();
 
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public interface UsersRegistrationRepo {
     List<UsersRegistration> getAllUsers();
 
-    boolean registerUser(String name, String email, String password_hash, String role);
+    boolean registerUser(String name, String email, String password_hash);
 
     UsersRegistration login(String email, String password_hash);
 
