@@ -1,6 +1,6 @@
 package com.joysistvi.cinebookapp.repository;
 
-import com.joysistvi.cinebookapp.config.DBConnection;
+import com.joysistvi.cinebookapp.database.DatabaseConnection;
 import com.joysistvi.cinebookapp.model.UsersRegistration;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
-    private final DBConnection dbConnection;
+    private final DatabaseConnection databaseConnection;
 
-    public UsersRegistrationRepoImpl(DBConnection dbConnection){
-        this.dbConnection = dbConnection;
+    public UsersRegistrationRepoImpl(DatabaseConnection dbConnection){
+        this.databaseConnection = dbConnection;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
         List<UsersRegistration> users = new ArrayList<>();
         String query = "SELECT * FROM users";
 
-        try (Connection conn = dbConnection.connect();
+        try (Connection conn = databaseConnection.connect();
              PreparedStatement prep = conn.prepareStatement(query);
              ResultSet res = prep.executeQuery()){
 
@@ -48,7 +48,7 @@ public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
 
         String hashedPassword = BCrypt.hashpw(password_hash, BCrypt.gensalt());
 
-        try (Connection connection = dbConnection.connect();
+        try (Connection connection = databaseConnection.connect();
              PreparedStatement prep = connection.prepareStatement(query)) {
 
             prep.setString(1, name);
