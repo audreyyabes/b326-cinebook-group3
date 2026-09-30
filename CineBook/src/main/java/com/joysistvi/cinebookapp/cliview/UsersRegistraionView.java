@@ -49,7 +49,21 @@ public class UsersRegistraionView {
     private void handleUsersRegistration(Scanner scanner, UsersRegistrationController usersRegistrationController){
         clearScreen();
 
-        System.out.println("\n --- REGISTER ---\n");
+        System.out.println("""
+========================================================================================
+                      ____ _____ _  _ _____ ____  ____  ____  _  _
+                     / ___|_   _| || | ____| __ )/ ___|/ ___|| || |
+                    | |     | | | || |  _| |  _ \\ |  /| |   | || |
+                    | |___  | | | || | |___| |_) | |__| |___| __ |
+                     \\____| |_| |_||_|_____|____/\\____|\\____|_||_|
+                                  THEATRE CLI v1.0
+========================================================================================
+[ Portal: Customer Registration ]
+----------------------------------------------------------------------------------------
+
+                         >>> CREATE CUSTOMER ACCOUNT <<<""");
+
+
         System.out.println("Name: ");
         String name = scanner.nextLine();
         System.out.println("Email: ");
@@ -57,11 +71,16 @@ public class UsersRegistraionView {
         System.out.println("Password: ");
         String password_hash = scanner.nextLine();
 
+        System.out.println();
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println("[!] Account Role automatically assigned: 'customer'");
+        System.out.println("[✓] Checking email availability...");
+
+
         boolean success = usersRegistrationController.handleRegister(name, email, password_hash);
         System.out.println(success
                 ? "Registered successfully! You can now log in."
                 : "Failed to register.");
-        scanner.nextLine();
 
     }
 
