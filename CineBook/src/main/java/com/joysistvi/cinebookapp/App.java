@@ -1,4 +1,5 @@
-package com.joysistvi.cinebookapp;
+```java
+        package com.joysistvi.cinebookapp;
 
 import com.joysistvi.cinebookapp.cliview.ShowtimeView;
 import com.joysistvi.cinebookapp.controller.ShowtimeController;
@@ -6,28 +7,40 @@ import com.joysistvi.cinebookapp.repository.ShowtimeRepo;
 import com.joysistvi.cinebookapp.repository.ShowtimeRepoImpl;
 import com.joysistvi.cinebookapp.service.ShowtimeService;
 import com.joysistvi.cinebookapp.service.ShowtimeServiceImpl;
+import com.joysistvi.cinebookapp.database.DatabaseBootstrap;
+import com.joysistvi.cinebookapp.database.DatabaseConnection;
+import com.joysistvi.cinebookapp.database.DatabaseMigration;
 
 import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) {
+        public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+                DatabaseBootstrap bootstrap = new DatabaseBootstrap();
+                DatabaseMigration migration = new DatabaseMigration();
+                DatabaseConnection databaseConnection = new DatabaseConnection();
 
-        ShowtimeRepo showtimeRepo = new ShowtimeRepoImpl();
+                bootstrap.createDatabaseIfNotExists();
+                migration.migrate();
+                databaseConnection.testConnection();
 
-        ShowtimeService showtimeService =
-                new ShowtimeServiceImpl(showtimeRepo);
+                Scanner scanner = new Scanner(System.in);
 
-        ShowtimeController showtimeController =
-                new ShowtimeController(showtimeService);
+                ShowtimeRepo showtimeRepo = new ShowtimeRepoImpl();
 
-        ShowtimeView showtimeView =
-                new ShowtimeView(showtimeController, scanner);
+                ShowtimeService showtimeService =
+                        new ShowtimeServiceImpl(showtimeRepo);
 
-        showtimeView.show();
+                ShowtimeController showtimeController =
+                        new ShowtimeController(showtimeService);
 
-        scanner.close();
-    }
+                ShowtimeView showtimeView =
+                        new ShowtimeView(showtimeController, scanner);
+
+                showtimeView.show();
+
+                scanner.close();
+        }
 }
+```
