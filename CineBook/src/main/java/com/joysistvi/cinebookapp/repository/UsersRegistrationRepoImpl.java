@@ -1,7 +1,7 @@
 package com.joysistvi.cinebookapp.repository;
 
 import com.joysistvi.cinebookapp.config.DBConnection;
-import com.joysistvi.cinebookapp.model.Users;
+import com.joysistvi.cinebookapp.model.UsersRegistration;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,16 +9,16 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersRepoImpl implements UsersRepo{
+public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
     private final DBConnection dbConnection;
 
-    public UsersRepoImpl(DBConnection dbConnection){
+    public UsersRegistrationRepoImpl(DBConnection dbConnection){
         this.dbConnection = dbConnection;
     }
 
     @Override
-    public List<Users> getAllUsers() {
-        List<Users> users = new ArrayList<>();
+    public List<UsersRegistration> getAllUsers() {
+        List<UsersRegistration> users = new ArrayList<>();
         String query = "SELECT * FROM users";
 
         try (Connection conn = dbConnection.connect();
@@ -26,7 +26,7 @@ public class UsersRepoImpl implements UsersRepo{
              ResultSet res = prep.executeQuery()){
 
             while (res.next()){
-                users.add(new Users(
+                users.add(new UsersRegistration(
                         res.getInt("id"),
                         res.getString("name"),
                         res.getString("email"),
@@ -46,7 +46,7 @@ public class UsersRepoImpl implements UsersRepo{
     }
 
     @Override
-    public Users login(String email, String password_hash) {
+    public UsersRegistration login(String email, String password_hash) {
         return null;
     }
 

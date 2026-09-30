@@ -1,12 +1,12 @@
 package com.joysistvi.cinebookapp;
 
-import com.joysistvi.cinebookapp.cliview.UsersView;
+import com.joysistvi.cinebookapp.cliview.UsersRegistraionView;
 import com.joysistvi.cinebookapp.config.DBConnection;
-import com.joysistvi.cinebookapp.controller.UsersController;
-import com.joysistvi.cinebookapp.repository.UsersRepo;
-import com.joysistvi.cinebookapp.repository.UsersRepoImpl;
-import com.joysistvi.cinebookapp.service.UsersService;
-import com.joysistvi.cinebookapp.service.UsersServiceImpl;
+import com.joysistvi.cinebookapp.controller.UsersRegistrationController;
+import com.joysistvi.cinebookapp.repository.UsersRegistrationRepo;
+import com.joysistvi.cinebookapp.repository.UsersRegistrationRepoImpl;
+import com.joysistvi.cinebookapp.service.UsersRegistrationService;
+import com.joysistvi.cinebookapp.service.UsersRegistrationServiceImpl;
 
 import java.util.Scanner;
 
@@ -15,12 +15,12 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         DBConnection dbConnection = new DBConnection();
 
-        UsersRepo usersRepo = new UsersRepoImpl(dbConnection);
-        UsersService usersService = new UsersServiceImpl(usersRepo);
-        UsersController usersController = new UsersController(usersService);
-        UsersView usersView = new UsersView(usersController, scanner);
+        UsersRegistrationRepo usersRegistrationRepo = new UsersRegistrationRepoImpl(dbConnection);
+        UsersRegistrationService usersRegistrationService = new UsersRegistrationServiceImpl(usersRegistrationRepo);
+        UsersRegistrationController usersRegistrationController = new UsersRegistrationController(usersRegistrationService);
+        UsersRegistraionView usersRegistraionView = new UsersRegistraionView(usersRegistrationController, scanner);
 
-        usersView.runUsers();
+        usersRegistraionView.runUsers();
 
     }
 }

@@ -1,6 +1,6 @@
 package com.joysistvi.cinebookapp.model;
 
-public class Users {
+public class UsersRegistration {
     private int id;
     private String name;
     private String email;
@@ -14,7 +14,7 @@ public class Users {
 
     ;
 
-    public Users(int id, String name, String email, String password_hash, String role) {
+    public UsersRegistration(int id, String name, String email, String password_hash, String role) {
         this.id = id;
         this.name = name;
         this.email = email;
