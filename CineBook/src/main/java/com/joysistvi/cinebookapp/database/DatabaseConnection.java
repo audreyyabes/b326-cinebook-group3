@@ -81,7 +81,7 @@ public class DatabaseConnection {
 
             logger.error("Database connection failed.");
 
-            logger.error("Reason: " + e.getMessage());
+            logger.error("Reason: {}", e.getMessage());
         }
     }
 
