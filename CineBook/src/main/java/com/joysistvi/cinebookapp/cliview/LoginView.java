@@ -39,7 +39,7 @@ public class LoginView {
         System.out.println();
 
         System.out.println(DIVIDER);
-        System.out.println("[ Authenticative validation via Argon2 password_hash ]");
+        System.out.println("[ Authenticative validation via bcrypt password_hash ]");
         System.out.print("Authenticating... ");
 
         Optional<Users> user = usersController.login(email, password);
