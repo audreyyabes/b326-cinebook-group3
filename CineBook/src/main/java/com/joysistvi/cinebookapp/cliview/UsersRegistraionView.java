@@ -18,7 +18,7 @@ public class UsersRegistraionView {
     }
 
     public boolean runUserRegistration(){
-        handleUsersRegistration(scanner , usersRegistrationController);
+        handleUsersRegistration(usersRegistrationController, scanner);
         return false;
     }
 
@@ -46,7 +46,7 @@ public class UsersRegistraionView {
         System.out.println(border);
     }
 
-    private void handleUsersRegistration(Scanner scanner, UsersRegistrationController usersRegistrationController){
+    private void handleUsersRegistration(UsersRegistrationController usersRegistrationController, Scanner scanner){
         clearScreen();
 
         System.out.println("""

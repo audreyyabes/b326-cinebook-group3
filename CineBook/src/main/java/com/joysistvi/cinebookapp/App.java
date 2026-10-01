@@ -2,12 +2,20 @@ package com.joysistvi.cinebookapp;
 
 import com.joysistvi.cinebookapp.cliview.Header;
 import com.joysistvi.cinebookapp.cliview.LoginView;
+import com.joysistvi.cinebookapp.cliview.UsersRegistraionView;
 import com.joysistvi.cinebookapp.controller.UsersController;
+import com.joysistvi.cinebookapp.controller.UsersRegistrationController;
 import com.joysistvi.cinebookapp.database.AdminAccountInitializer;
 import com.joysistvi.cinebookapp.database.DatabaseBootstrap;
 import com.joysistvi.cinebookapp.database.DatabaseConnection;
 import com.joysistvi.cinebookapp.database.DatabaseMigration;
 import com.joysistvi.cinebookapp.model.Users;
+import com.joysistvi.cinebookapp.model.UsersRegistration;
+import com.joysistvi.cinebookapp.repository.UsersRegistrationRepo;
+import com.joysistvi.cinebookapp.repository.UsersRegistrationRepoImpl;
+import com.joysistvi.cinebookapp.service.UsersRegistrationService;
+import com.joysistvi.cinebookapp.service.UsersRegistrationServiceImpl;
+import com.joysistvi.cinebookapp.service.UsersServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +48,18 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         LoginView loginView = new LoginView(usersController, scanner);
 
+        UsersRegistrationRepo usersRegistrationRepo = new UsersRegistrationRepoImpl(databaseConnection);
+        UsersRegistrationService usersRegistrationService = new UsersRegistrationServiceImpl(usersRegistrationRepo);
+        UsersRegistrationController usersRegistrationController = new UsersRegistrationController(usersRegistrationService);
+        UsersRegistraionView usersRegistraionView = new UsersRegistraionView(usersRegistrationController, scanner);
+
         Optional<Users> session = Optional.empty();
         while (session.isEmpty()) {
             Header.print();
             System.out.println();
             System.out.println("\t\t\t[1] Login");
-            System.out.println("\t\t\t[2] Exit");
+            System.out.println("\t\t\t[2] Register");
+            System.out.println("\t\t\t[3] Exit");
             System.out.println();
             System.out.print("\t\t\tSelect an option: ");
             String choice = scanner.nextLine().trim();
@@ -53,15 +67,12 @@ public class App {
 
             switch (choice) {
                 case "1" -> session = safeShow(loginView::show, scanner);
-                case "2" -> {
+                case "2" -> usersRegistraionView.runUserRegistration();
+                case "3" -> {
                     System.out.println("Goodbye!");
                     return;
                 }
-                default -> {
-                    System.out.println("Invalid option, please try again.");
-                    pause(scanner);
-                }
-            }
+        }
         }
     }
 
