@@ -10,7 +10,5 @@ public interface UsersService {
 
     boolean existsByEmail(String email);
 
-    Users register(String name, String email, String password);
-
     Users createAdmin(String name, String email, String password);
 }

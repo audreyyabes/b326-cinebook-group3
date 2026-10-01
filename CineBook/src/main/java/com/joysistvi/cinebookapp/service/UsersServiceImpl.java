@@ -35,14 +35,6 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users register(String name, String email, String password) {
-        if (usersRepo.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException(email);
-        }
-        return createUser(name, email, password, "customer");
-    }
-
-    @Override
     public Users createAdmin(String name, String email, String password) {
         return createUser(name, email, password, "admin");
     }

@@ -21,12 +21,4 @@ public class UsersController {
     public Optional<Users> login(String email, String password) {
         return usersService.authenticate(email, password);
     }
-
-    public boolean isEmailTaken(String email) {
-        return usersService.existsByEmail(email);
-    }
-
-    public Users register(String name, String email, String password) {
-        return usersService.register(name, email, password);
-    }
 }
