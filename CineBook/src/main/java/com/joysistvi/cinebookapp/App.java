@@ -1,46 +1,22 @@
-```java
-        package com.joysistvi.cinebookapp;
+package com.joysistvi.cinebookapp;
 
-import com.joysistvi.cinebookapp.cliview.ShowtimeView;
-import com.joysistvi.cinebookapp.controller.ShowtimeController;
-import com.joysistvi.cinebookapp.repository.ShowtimeRepo;
-import com.joysistvi.cinebookapp.repository.ShowtimeRepoImpl;
-import com.joysistvi.cinebookapp.service.ShowtimeService;
-import com.joysistvi.cinebookapp.service.ShowtimeServiceImpl;
 import com.joysistvi.cinebookapp.database.DatabaseBootstrap;
 import com.joysistvi.cinebookapp.database.DatabaseConnection;
 import com.joysistvi.cinebookapp.database.DatabaseMigration;
-
-import java.util.Scanner;
+import com.joysistvi.cinebookapp.database.DatabaseSeeder;
 
 public class App {
 
-        public static void main(String[] args) {
+    public static void main(String[] args) {
 
-                DatabaseBootstrap bootstrap = new DatabaseBootstrap();
-                DatabaseMigration migration = new DatabaseMigration();
-                DatabaseConnection databaseConnection = new DatabaseConnection();
+        DatabaseBootstrap bootstrap = new DatabaseBootstrap(); // Create database upon running the application
+        DatabaseMigration migration = new DatabaseMigration(); // Create tables upon running the application
+        DatabaseConnection databaseConnection = new DatabaseConnection();
+        DatabaseSeeder seeder = new DatabaseSeeder(); // Populate sample data if the database is empty
 
-                bootstrap.createDatabaseIfNotExists();
-                migration.migrate();
-                databaseConnection.testConnection();
-
-                Scanner scanner = new Scanner(System.in);
-
-                ShowtimeRepo showtimeRepo = new ShowtimeRepoImpl();
-
-                ShowtimeService showtimeService =
-                        new ShowtimeServiceImpl(showtimeRepo);
-
-                ShowtimeController showtimeController =
-                        new ShowtimeController(showtimeService);
-
-                ShowtimeView showtimeView =
-                        new ShowtimeView(showtimeController, scanner);
-
-                showtimeView.show();
-
-                scanner.close();
-        }
+        bootstrap.createDatabaseIfNotExists();
+        migration.migrate();
+        databaseConnection.testConnection();
+        seeder.seed();
+    }
 }
-```
