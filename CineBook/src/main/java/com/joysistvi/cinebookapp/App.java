@@ -1,10 +1,8 @@
 package com.joysistvi.cinebookapp;
 
-import com.joysistvi.cinebookapp.cliview.BookingSeatsView;
 import com.joysistvi.cinebookapp.cliview.Header;
 import com.joysistvi.cinebookapp.cliview.LoginView;
 import com.joysistvi.cinebookapp.cliview.UsersRegistraionView;
-import com.joysistvi.cinebookapp.controller.BookingSeatsController;
 import com.joysistvi.cinebookapp.controller.UsersController;
 import com.joysistvi.cinebookapp.controller.UsersRegistrationController;
 import com.joysistvi.cinebookapp.database.AdminAccountInitializer;
@@ -13,11 +11,11 @@ import com.joysistvi.cinebookapp.database.DatabaseConnection;
 import com.joysistvi.cinebookapp.database.DatabaseMigration;
 import com.joysistvi.cinebookapp.model.Users;
 import com.joysistvi.cinebookapp.model.UsersRegistration;
-import com.joysistvi.cinebookapp.repository.BookingSeatsRepo;
-import com.joysistvi.cinebookapp.repository.BookingSeatsRepoImpl;
 import com.joysistvi.cinebookapp.repository.UsersRegistrationRepo;
 import com.joysistvi.cinebookapp.repository.UsersRegistrationRepoImpl;
-import com.joysistvi.cinebookapp.service.*;
+import com.joysistvi.cinebookapp.service.UsersRegistrationService;
+import com.joysistvi.cinebookapp.service.UsersRegistrationServiceImpl;
+import com.joysistvi.cinebookapp.service.UsersServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,48 +43,37 @@ public class App {
             logger.error("Application startup encountered an error", e);
             System.out.println("[!] Startup warning: some features may not work. Check the logs for details.");
         }
-//
-//        UsersController usersController = new UsersController();
-//        Scanner scanner = new Scanner(System.in);
-//        LoginView loginView = new LoginView(usersController, scanner);
-//
-//        UsersRegistrationRepo usersRegistrationRepo = new UsersRegistrationRepoImpl(databaseConnection);
-//        UsersRegistrationService usersRegistrationService = new UsersRegistrationServiceImpl(usersRegistrationRepo);
-//        UsersRegistrationController usersRegistrationController = new UsersRegistrationController(usersRegistrationService);
-//        UsersRegistraionView usersRegistraionView = new UsersRegistraionView(usersRegistrationController, scanner);
-//
-//        Optional<Users> session = Optional.empty();
-//        while (session.isEmpty()) {
-//            Header.print();
-//            System.out.println();
-//            System.out.println("\t\t\t[1] Login");
-//            System.out.println("\t\t\t[2] Register");
-//            System.out.println("\t\t\t[3] Exit");
-//            System.out.println();
-//            System.out.print("\t\t\tSelect an option: ");
-//            String choice = scanner.nextLine().trim();
-//            System.out.println();
-//
-//            switch (choice) {
-//                case "1" -> session = safeShow(loginView::show, scanner);
-//                case "2" -> usersRegistraionView.runUserRegistration();
-//                case "3" -> {
-//                    System.out.println("Goodbye!");
-//                    return;
-//                }
-//        }
-//        }
 
-
+        UsersController usersController = new UsersController();
         Scanner scanner = new Scanner(System.in);
-        BookingSeatsRepo bookingSeatsRepo = new BookingSeatsRepoImpl(databaseConnection);
-        BookingSeatsService bookingSeatsService = new BookingSeatsServiceImpl(bookingSeatsRepo);
-        BookingSeatsController bookingSeatsController = new BookingSeatsController(bookingSeatsService);
-        BookingSeatsView bookingSeatsView = new BookingSeatsView(bookingSeatsController, scanner);
+        LoginView loginView = new LoginView(usersController, scanner);
 
-        bookingSeatsView.runBookingSeats();
+        UsersRegistrationRepo usersRegistrationRepo = new UsersRegistrationRepoImpl(databaseConnection);
+        UsersRegistrationService usersRegistrationService = new UsersRegistrationServiceImpl(usersRegistrationRepo);
+        UsersRegistrationController usersRegistrationController = new UsersRegistrationController(usersRegistrationService);
+        UsersRegistraionView usersRegistraionView = new UsersRegistraionView(usersRegistrationController, scanner);
 
+        Optional<Users> session = Optional.empty();
+        while (session.isEmpty()) {
+            Header.print();
+            System.out.println();
+            System.out.println("\t\t\t[1] Login");
+            System.out.println("\t\t\t[2] Register");
+            System.out.println("\t\t\t[3] Exit");
+            System.out.println();
+            System.out.print("\t\t\tSelect an option: ");
+            String choice = scanner.nextLine().trim();
+            System.out.println();
 
+            switch (choice) {
+                case "1" -> session = safeShow(loginView::show, scanner);
+                case "2" -> usersRegistraionView.runUserRegistration();
+                case "3" -> {
+                    System.out.println("Goodbye!");
+                    return;
+                }
+            }
+        }
     }
 
     private static Optional<Users> safeShow(Supplier<Optional<Users>> view, Scanner scanner) {
