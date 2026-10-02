@@ -2,3 +2,4 @@ target/
 .idea/
 .env.example
 .env*.iml
+CineBook.iml
