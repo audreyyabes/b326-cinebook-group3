@@ -21,4 +21,8 @@ public class ShowtimeController {
     public Showtime handleGetShowtimeById(int id) {
         return showtimeService.getShowtimeById(id);
     }
+
+    public boolean handleCreateShowtime(Showtime showtime) {
+        return showtimeService.create(showtime);
+    }
 }

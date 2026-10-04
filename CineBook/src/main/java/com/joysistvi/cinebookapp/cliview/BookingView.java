@@ -8,12 +8,18 @@ import java.util.Scanner;
 
 public class BookingView {
 
+    private static final int WIDTH = 88;
+
     private final BookingController bookingController;
     private final Scanner scanner;
 
     public BookingView(BookingController bookingController) {
+        this(bookingController, new Scanner(System.in));
+    }
+
+    public BookingView(BookingController bookingController, Scanner scanner) {
         this.bookingController = bookingController;
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
     }
 
     public void showBookingAudit() {
@@ -26,13 +32,10 @@ public class BookingView {
 
             displayFinancialMetrics();
 
-            System.out.println(
-                    "---------------------------------------------------------------------------------------------"
-            );
+            CliLayout.println("-".repeat(WIDTH));
+            CliLayout.println("[P] Process / Confirm Pending Payment | [B] Back to Admin Portal");
 
-            System.out.println("[P] Process / Confirm Pending Payment  |  [B] Back to Admin Portal");
-
-            System.out.print("Select Option: ");
+            CliLayout.print("Select Option: ");
 
             String option = scanner.nextLine();
 
@@ -42,55 +45,62 @@ public class BookingView {
 
             } else if (option.equalsIgnoreCase("B")) {
 
-                System.out.println("Returning to Admin Portal...");
+                CliLayout.println("Returning to Admin Portal...");
 
                 break;
 
             } else {
 
-                System.out.println("Invalid option.");
+                CliLayout.println("Invalid option.");
 
                 pause();
             }
         }
     }
 
+    public void processPendingPayments() {
+        while (true) {
+            displayHeader();
+            List<BookingAudit> pending = bookingController.getBookingAudit().stream()
+                    .filter(booking -> "pending".equalsIgnoreCase(booking.getBookingStatus()))
+                    .toList();
+            if (pending.isEmpty()) {
+                pauseWithMessage("There are no pending payments. Press [ENTER] to return...");
+                return;
+            }
+                CliLayout.table(List.of("ID", "Booking Code", "Customer", "Total", "Payment"),
+                    pending.stream().map(booking -> List.of(booking.getId(), booking.getBookingCode(),
+                        booking.getCustomerName(), String.format("₱%,.2f", booking.getTotalAmount()),
+                        booking.getPaymentDetails()))
+                        .toList());
+
+            String selection = prompt("Enter booking ID to confirm, or B to return: ");
+            if (selection.equalsIgnoreCase("B")) {
+                return;
+            }
+            int bookingId;
+            try {
+                bookingId = Integer.parseInt(selection);
+            } catch (NumberFormatException e) {
+                pauseWithMessage("Enter a valid booking ID. Press [ENTER] to continue...");
+                continue;
+            }
+            if (pending.stream().noneMatch(booking -> booking.getId() == bookingId)) {
+                pauseWithMessage("That booking is not pending. Press [ENTER] to continue...");
+                continue;
+            }
+            if ("Y".equalsIgnoreCase(prompt("Confirm payment for booking " + bookingId + "? (Y/N): "))) {
+                boolean confirmed = bookingController.confirmBooking(bookingId);
+                pauseWithMessage(confirmed ? "Payment confirmed. Press [ENTER] to continue..."
+                        : "Payment could not be confirmed. Press [ENTER] to continue...");
+            }
+        }
+    }
+
     private void displayHeader() {
-
-        System.out.println();
-        System.out.println("=============================================================================================");
-
-        System.out.println(
-                "                      ____ _____ _  _ _____ ____  ____  ____  _  _ "
-        );
-
-        System.out.println(
-                "                     / ___|_   _| || | ____| __ )/ ___|/ ___|| || |"
-        );
-
-        System.out.println(
-                "                     | |     | | | || |  _| |  _ \\ |  /| |   | || |"
-        );
-
-        System.out.println(
-                "                     | |___  | | | || | |___| |_) | |__| |___| __ |"
-        );
-
-        System.out.println(
-                "                      \\____| |_| |_||_|_____|____/\\____|\\____|_||_|"
-        );
-
-        System.out.println(
-                "                                  THEATRE CLI v1.0"
-        );
-
-        System.out.println("=============================================================================================");
-
-        System.out.println(
-                "[ Admin Portal | Revenue & Transaction Audit ]"
-        );
-
-        System.out.println("---------------------------------------------------------------------------------------------");
+        Header.print();
+        CliLayout.println("[ Admin Portal | Revenue & Transaction Audit ]");
+        CliLayout.println("-".repeat(WIDTH));
     }
 
     private void displayBookings() {
@@ -98,38 +108,17 @@ public class BookingView {
         List<BookingAudit> bookings =
                 bookingController.getBookingAudit();
 
-        System.out.printf(
-                "%-4s | %-17s | %-15s | %-10s | %-14s | %-20s%n",
-                "ID",
-                "Code",
-                "Customer",
-                "Total",
-                "Booking Status",
-                "Payment Details"
-        );
-
-        System.out.println("----+-----------------+---------------+----------+----------------+--------------------------");
-
-        for (BookingAudit booking : bookings) {
-
-            System.out.printf(
-                    "%-4d | %-17s | %-15s | ₱%8.2f | %-14s | %-20s%n",
-
-                    booking.getId(),
-
-                    booking.getBookingCode(),
-
-                    booking.getCustomerName(),
-
-                    booking.getTotalAmount(),
-
-                    booking.getBookingStatus(),
-
-                    booking.getPaymentDetails()
-            );
+        if (bookings.isEmpty()) {
+            CliLayout.println("No bookings found.");
+            CliLayout.println();
+            return;
         }
 
-        System.out.println();
+        CliLayout.table(List.of("ID", "Code", "Customer", "Total", "Booking Status", "Payment Details"),
+            bookings.stream().map(booking -> List.of(booking.getId(), booking.getBookingCode(),
+                booking.getCustomerName(), String.format("₱%,.2f", booking.getTotalAmount()),
+                booking.getBookingStatus(), booking.getPaymentDetails()))
+                .toList());
     }
 
     private void displayFinancialMetrics() {
@@ -140,21 +129,21 @@ public class BookingView {
 
         int totalTickets = bookingController.getTotalTicketsReserved();
 
-        System.out.println("---------------------------------------------------------------------------------------------");
+        CliLayout.println("-".repeat(WIDTH));
 
-        System.out.println("FINANCIAL METRICS:");
+        CliLayout.println("FINANCIAL METRICS:");
 
-        System.out.printf(
+        CliLayout.printf(
                 "Total Confirmed Revenue : ₱%,.2f%n",
                 confirmedRevenue
         );
 
-        System.out.printf(
+        CliLayout.printf(
                 "Pending Unpaid Total    : ₱%,.2f%n",
                 pendingTotal
         );
 
-        System.out.println(
+        CliLayout.println(
                 "Total Tickets Reserved  : "
                         + totalTickets
                         + " seats"
@@ -180,8 +169,8 @@ public class BookingView {
 
         if (pendingBooking == null) {
 
-            System.out.println();
-            System.out.println(
+            CliLayout.println();
+            CliLayout.println(
                     "There are no pending payments."
             );
 
@@ -190,23 +179,23 @@ public class BookingView {
             return;
         }
 
-        System.out.println();
-        System.out.println("----- PROCESS PENDING PAYMENT -----");
+        CliLayout.println();
+        CliLayout.println("----- PROCESS PENDING PAYMENT -----");
 
-        System.out.println("Booking ID   : " + pendingBooking.getId());
+        CliLayout.println("Booking ID   : " + pendingBooking.getId());
 
-        System.out.println("Booking Code : " + pendingBooking.getBookingCode());
+        CliLayout.println("Booking Code : " + pendingBooking.getBookingCode());
 
-        System.out.println("Customer     : "
+        CliLayout.println("Customer     : "
                 + pendingBooking.getCustomerName());
 
-        System.out.printf("Amount       : ₱%,.2f%n", pendingBooking.getTotalAmount());
+        CliLayout.printf("Amount       : ₱%,.2f%n", pendingBooking.getTotalAmount());
 
-        System.out.println("Payment      : " + pendingBooking.getPaymentDetails());
+        CliLayout.println("Payment      : " + pendingBooking.getPaymentDetails());
 
-        System.out.println();
+        CliLayout.println();
 
-        System.out.print("Confirm payment? (Y/N): ");
+        CliLayout.print("Confirm payment? (Y/N): ");
 
         String answer = scanner.nextLine();
 
@@ -216,18 +205,18 @@ public class BookingView {
 
             if (success) {
 
-                System.out.println();
-                System.out.println("Payment confirmed successfully!");
+                CliLayout.println();
+                CliLayout.println("Payment confirmed successfully!");
 
             } else {
 
-                System.out.println();
-                System.out.println("Failed to confirm payment.");
+                CliLayout.println();
+                CliLayout.println("Failed to confirm payment.");
             }
 
         } else {
 
-            System.out.println("Payment was not confirmed.");
+            CliLayout.println("Payment was not confirmed.");
         }
 
         pause();
@@ -235,9 +224,19 @@ public class BookingView {
 
     private void pause() {
 
-        System.out.println();
-        System.out.print("Press ENTER to continue...");
+        CliLayout.println();
+        CliLayout.print("Press ENTER to continue...");
 
+        scanner.nextLine();
+    }
+
+    private String prompt(String label) {
+        CliLayout.print(label);
+        return scanner.nextLine().trim();
+    }
+
+    private void pauseWithMessage(String message) {
+        CliLayout.print(message);
         scanner.nextLine();
     }
 }

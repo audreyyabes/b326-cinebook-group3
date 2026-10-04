@@ -39,6 +39,32 @@ public class UsersServiceImpl implements UsersService {
         return createUser(name, email, password, "admin");
     }
 
+    @Override
+    public boolean updateProfile(Users user, String name, String email) {
+        if (user == null || name == null || name.isBlank() || email == null || email.isBlank()) {
+            return false;
+        }
+        Optional<Users> existing = usersRepo.findByEmail(email.trim());
+        if (existing.isPresent() && existing.get().getId() != user.getId()) {
+            return false;
+        }
+        return usersRepo.updateProfile(user.getId(), name.trim(), email.trim());
+    }
+
+    @Override
+    public boolean changePassword(Users user, String currentPassword, String newPassword) {
+        if (user == null || currentPassword == null || newPassword == null || newPassword.length() < 8
+                || !verify(currentPassword, user.getPasswordHash())) {
+            return false;
+        }
+        String passwordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        boolean changed = usersRepo.updatePassword(user.getId(), passwordHash);
+        if (changed) {
+            user.setPasswordHash(passwordHash);
+        }
+        return changed;
+    }
+
     private Users createUser(String name, String email, String password, String role) {
         String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
 

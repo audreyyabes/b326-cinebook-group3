@@ -26,33 +26,35 @@ public class LoginView {
 
     public Optional<Users> show() {
         Header.print();
-        System.out.println("[ System: Authentication Screen ]");
-        System.out.println(DIVIDER);
-        System.out.println();
-        System.out.println(center(">>> USER LOGIN <<<"));
-        System.out.println();
+        CliLayout.println("[ Portal: Account Login ]");
+        CliLayout.println(DIVIDER);
+        CliLayout.println();
+        CliLayout.println(center(">>> USER LOGIN <<<"));
+        CliLayout.println();
 
-        System.out.print("  Enter Email    : ");
+        CliLayout.print("  Enter Email    : ");
         String email = scanner.nextLine().trim();
 
         String password = readPassword("  Enter Password : ");
-        System.out.println();
+        CliLayout.println();
 
-        System.out.println(DIVIDER);
-        System.out.println("[ Authenticative validation via bcrypt password_hash ]");
-        System.out.print("Authenticating... ");
+        CliLayout.println(DIVIDER);
+        CliLayout.print("Authenticating... ");
 
         Optional<Users> user = usersController.login(email, password);
 
         if (user.isPresent()) {
-            System.out.println("SUCCESS! Welcome back, " + user.get().getName() + ".");
-            System.out.println();
-            System.out.print("Press [ENTER] to proceed to Customer Portal...");
+            CliLayout.println("[✓] Authentication successful!");
+            CliLayout.println("[i] Role detected: " + user.get().getRole().toUpperCase());
+            CliLayout.println();
+            CliLayout.print("Press [ENTER] to continue to "
+                    + ("admin".equalsIgnoreCase(user.get().getRole()) ? "Admin" : "Customer")
+                    + " Portal...");
             scanner.nextLine();
         } else {
-            System.out.println("FAILED! Invalid email or password.");
-            System.out.println();
-            System.out.print("Press [ENTER] to continue...");
+            CliLayout.println("FAILED! Invalid email or password.");
+            CliLayout.println();
+            CliLayout.print("Press [ENTER] to continue...");
             scanner.nextLine();
         }
 
@@ -62,7 +64,7 @@ public class LoginView {
     private String readPassword(String prompt) {
         Console console = System.console();
         if (console == null) {
-            System.out.print(prompt);
+            CliLayout.print(prompt);
             return scanner.nextLine();
         }
 

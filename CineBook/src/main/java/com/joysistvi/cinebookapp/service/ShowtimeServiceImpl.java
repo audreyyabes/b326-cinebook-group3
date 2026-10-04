@@ -35,4 +35,15 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         return showtimeRepo.getShowtimeById(id);
     }
+
+    @Override
+    public boolean create(Showtime showtime) {
+        if (showtime == null || showtime.getMovieId() <= 0 || showtime.getTheaterId() <= 0
+                || showtime.getStartTime() == null || showtime.getEndTime() == null
+                || !showtime.getEndTime().isAfter(showtime.getStartTime())
+                || showtime.getTicketPrice() <= 0) {
+            return false;
+        }
+        return showtimeRepo.create(showtime);
+    }
 }

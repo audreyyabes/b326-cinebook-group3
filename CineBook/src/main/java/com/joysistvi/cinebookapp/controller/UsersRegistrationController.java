@@ -24,6 +24,10 @@ public class UsersRegistrationController {
         return usersRegistrationService.registerUser(name,email, password_hash);
     }
 
+    public boolean handleRegister(String name, String email, String password_hash, String role) {
+        return usersRegistrationService.registerUser(name, email, password_hash, role);
+    }
+
     public UsersRegistration handleLogin(String username, String password) {
         return usersRegistrationService.login(username, password);
     }

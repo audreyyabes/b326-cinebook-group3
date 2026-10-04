@@ -315,12 +315,22 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
         String sql = """
                 SELECT
+                    b.id,
                     b.booking_code,
                     m.title,
                     st.start_time,
                     t.name AS theater_name,
                     b.total_amount,
-                    b.status
+                    b.status AS booking_status,
+                    COALESCE((
+                        SELECT GROUP_CONCAT(s.seat_code ORDER BY s.seat_row, s.seat_number SEPARATOR ', ')
+                        FROM booking_seats bs
+                        JOIN seats s ON s.id = bs.seat_id
+                        WHERE bs.booking_id = b.id
+                    ), '') AS seat_codes,
+                    COALESCE(p.payment_method, '') AS payment_method,
+                    COALESCE(p.payment_reference, '') AS payment_reference,
+                    COALESCE(p.status, '') AS payment_status
 
                 FROM bookings b
 
@@ -332,6 +342,9 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
                 JOIN theaters t
                     ON st.theater_id = t.id
+
+                LEFT JOIN payments p
+                    ON p.booking_id = b.id
 
                 WHERE b.user_id = ?
 
@@ -348,7 +361,9 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                 while (resultSet.next()) {
 
                     String booking =
-                            resultSet.getString("booking_code")
+                            resultSet.getInt("id")
+                                + " | "
+                                + resultSet.getString("booking_code")
                                     + " | "
                                     + resultSet.getString("title")
                                     + " | "
@@ -358,7 +373,15 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                                     + " | ₱"
                                     + resultSet.getDouble("total_amount")
                                     + " | "
-                                    + resultSet.getString("status");
+                                    + resultSet.getString("booking_status")
+                                    + " | "
+                                    + resultSet.getString("seat_codes")
+                                    + " | "
+                                    + resultSet.getString("payment_method")
+                                    + " | "
+                                    + resultSet.getString("payment_reference")
+                                    + " | "
+                                    + resultSet.getString("payment_status");
 
                     bookings.add(booking);
                 }

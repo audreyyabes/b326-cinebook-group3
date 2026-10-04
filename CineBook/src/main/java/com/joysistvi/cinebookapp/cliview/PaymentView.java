@@ -40,44 +40,49 @@ public class PaymentView {
         double totalAmount = ticketPrice * seatIds.size();
 
         Header.print();
-        System.out.println("[ User: " + customerName + " | Booking Confirmation ]");
-        System.out.println(DIVIDER);
-        System.out.println();
-        System.out.println(center(">>> BOOKING SUMMARY <<<"));
-        System.out.println();
-        System.out.println(" Movie          : " + movieTitle);
-        System.out.println(" Theater        : " + theaterLabel);
-        System.out.println(" Showtime       : " + showtimeLabel);
-        System.out.println(" Seats Selected : " + String.join(", ", seatCodes) + " (" + seatIds.size() + " seats)");
-        System.out.printf(" Rate / Seat    : ₱ %.2f x %d%n", ticketPrice, seatIds.size());
-        System.out.println(DIVIDER);
-        System.out.printf(" TOTAL AMOUNT   : ₱ %.2f%n", totalAmount);
-        System.out.println(DIVIDER);
-        System.out.println();
-        System.out.println(" Select Payment Method:");
-        System.out.println("  [1] GCash");
-        System.out.println("  [2] Credit Card");
-        System.out.println("  [3] Cash at Counter (Status: Pending)");
-        System.out.println();
-        System.out.print("Choose option [1-3]: ");
+        CliLayout.println("[ User: " + customerName + " | Booking Confirmation ]");
+        CliLayout.println(DIVIDER);
+        CliLayout.println();
+        CliLayout.println(center(">>> BOOKING SUMMARY <<<"));
+        CliLayout.println();
+        CliLayout.println(" Movie          : " + movieTitle);
+        CliLayout.println(" Theater        : " + theaterLabel);
+        CliLayout.println(" Showtime       : " + showtimeLabel);
+        CliLayout.println(" Seats Selected : " + String.join(", ", seatCodes) + " (" + seatIds.size() + " seats)");
+        CliLayout.printf(" Rate / Seat    : ₱ %.2f x %d%n", ticketPrice, seatIds.size());
+        CliLayout.println(DIVIDER);
+        CliLayout.printf(" TOTAL AMOUNT   : ₱ %.2f%n", totalAmount);
+        CliLayout.println(DIVIDER);
+        CliLayout.println();
+        CliLayout.println(" Select Payment Method:");
+        CliLayout.println("  [1] GCash");
+        CliLayout.println("  [2] Credit Card");
+        CliLayout.println("  [3] Cash at Counter (Status: Pending)");
+        CliLayout.println();
+        CliLayout.print("Choose option [1-3]: ");
         String choice = scanner.nextLine().trim();
 
         String paymentMethod = resolvePaymentMethod(choice);
         if (paymentMethod == null) {
-            System.out.println();
-            System.out.println("[X] Invalid option. Returning to Customer Menu...");
+            CliLayout.println();
+            CliLayout.println("[X] Invalid option. Returning to Customer Menu...");
             pause();
             return;
         }
 
         String paymentReference = null;
         if (choice.equals("1")) {
-            System.out.print("Enter GCash Reference Number: ");
+            CliLayout.print("Enter GCash Reference Number: ");
             paymentReference = scanner.nextLine().trim();
+            if (paymentReference.isBlank()) {
+                CliLayout.println("[X] A GCash reference number is required.");
+                pause();
+                return;
+            }
         }
 
-        System.out.println();
-        System.out.print("Creating records in `bookings`, `booking_seats`, & `payments`... ");
+        CliLayout.println();
+        CliLayout.print("Creating records in `bookings`, `booking_seats`, & `payments`... ");
 
         boolean paidNow = choice.equals("1") || choice.equals("2");
         String bookingStatus = paidNow ? "confirmed" : "pending";
@@ -87,18 +92,18 @@ public class PaymentView {
                 totalAmount, bookingStatus);
 
         if (!bookingController.createBooking(booking)) {
-            System.out.println("FAILED!");
-            System.out.println();
-            System.out.println("[X] Could not create the booking. Please try again.");
+            CliLayout.println("FAILED!");
+            CliLayout.println();
+            CliLayout.println("[X] Could not create the booking. Please try again.");
             pause();
             return;
         }
 
         Booking savedBooking = findBookingByCode(bookingCode);
         if (savedBooking == null) {
-            System.out.println("FAILED!");
-            System.out.println();
-            System.out.println("[X] Booking was created but could not be found afterward.");
+            CliLayout.println("FAILED!");
+            CliLayout.println();
+            CliLayout.println("[X] Booking was created but could not be found afterward.");
             pause();
             return;
         }
@@ -111,11 +116,11 @@ public class PaymentView {
         paymentController.processPayment(savedBooking.getId(), BigDecimal.valueOf(totalAmount),
                 paymentMethod, paymentReference);
 
-        System.out.println("SUCCESS!");
-        System.out.println("Booking Code: " + savedBooking.getBookingCode()
+        CliLayout.println("SUCCESS!");
+        CliLayout.println("Booking Code: " + savedBooking.getBookingCode()
                 + " | Status: " + savedBooking.getStatus().toUpperCase());
-        System.out.println();
-        System.out.print("Press [ENTER] to return to Customer Menu...");
+        CliLayout.println();
+        CliLayout.print("Press [ENTER] to return to Customer Menu...");
         scanner.nextLine();
     }
 
@@ -155,7 +160,7 @@ public class PaymentView {
     }
 
     private void pause() {
-        System.out.print("Press [ENTER] to continue...");
+        CliLayout.print("Press [ENTER] to continue...");
         scanner.nextLine();
     }
 

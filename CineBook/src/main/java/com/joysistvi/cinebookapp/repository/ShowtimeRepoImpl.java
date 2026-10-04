@@ -106,4 +106,26 @@ public class ShowtimeRepoImpl implements ShowtimeRepo {
 
         return null;
     }
+
+    @Override
+    public boolean create(Showtime showtime) {
+        String sql = """
+                INSERT INTO showtimes (movie_id, theater_id, start_time, end_time, ticket_price, status)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+
+        try (Connection connection = databaseConnection.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, showtime.getMovieId());
+            statement.setInt(2, showtime.getTheaterId());
+            statement.setTimestamp(3, java.sql.Timestamp.valueOf(showtime.getStartTime()));
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(showtime.getEndTime()));
+            statement.setDouble(5, showtime.getTicketPrice());
+            statement.setString(6, showtime.getStatus());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

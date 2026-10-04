@@ -7,16 +7,22 @@ public class Movies {
     private String genre;
     private String rating;
     private int duration;
+    private String status;
 
     public Movies() {
     }
 
     public Movies(int id, String title, String genre, String rating, int duration) {
+        this(id, title, genre, rating, duration, "active");
+    }
+
+    public Movies(int id, String title, String genre, String rating, int duration, String status) {
         this.id = id;
         this.title = title;
         this.genre = genre;
         this.rating = rating;
         this.duration = duration;
+        this.status = status;
     }
 
     public int getId() {
@@ -57,5 +63,13 @@ public class Movies {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

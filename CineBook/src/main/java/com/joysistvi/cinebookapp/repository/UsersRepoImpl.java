@@ -81,4 +81,31 @@ public class UsersRepoImpl implements UsersRepo {
         return findByEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalStateException("User was created but could not be re-fetched"));
     }
+
+    @Override
+    public boolean updateProfile(int id, String name, String email) {
+        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+        try (Connection connection = databaseConnection.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setInt(3, id);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update user profile", e);
+        }
+    }
+
+    @Override
+    public boolean updatePassword(int id, String passwordHash) {
+        String sql = "UPDATE users SET password_hash = ? WHERE id = ?";
+        try (Connection connection = databaseConnection.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, passwordHash);
+            statement.setInt(2, id);
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update password", e);
+        }
+    }
 }

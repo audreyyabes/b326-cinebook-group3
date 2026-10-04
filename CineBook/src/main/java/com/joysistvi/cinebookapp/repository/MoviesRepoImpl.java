@@ -17,13 +17,13 @@ public class MoviesRepoImpl implements MoviesRepo {
         List<Movies> movies = new ArrayList<>();
 
         String sql = """
-                SELECT id, title, genre, rating, duration
+                SELECT id, title, genre, rating, duration_minutes AS duration, status
                 FROM movies
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
 
@@ -32,8 +32,8 @@ public class MoviesRepoImpl implements MoviesRepo {
                         resultSet.getString("title"),
                         resultSet.getString("genre"),
                         resultSet.getString("rating"),
-                        resultSet.getInt("duration")
-                );
+                        resultSet.getInt("duration"),
+                        resultSet.getString("status"));
 
                 movies.add(movie);
             }
@@ -49,13 +49,13 @@ public class MoviesRepoImpl implements MoviesRepo {
     public Movies findById(int id) {
 
         String sql = """
-                SELECT id, title, genre, rating, duration
+                SELECT id, title, genre, rating, duration_minutes AS duration, status
                 FROM movies
                 WHERE id = ?
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
 
@@ -68,8 +68,8 @@ public class MoviesRepoImpl implements MoviesRepo {
                             resultSet.getString("title"),
                             resultSet.getString("genre"),
                             resultSet.getString("rating"),
-                            resultSet.getInt("duration")
-                    );
+                            resultSet.getInt("duration"),
+                            resultSet.getString("status"));
                 }
             }
 
@@ -81,68 +81,73 @@ public class MoviesRepoImpl implements MoviesRepo {
     }
 
     @Override
-    public void save(Movies movies) {
+    public boolean save(Movies movies) {
 
         String sql = """
-                INSERT INTO movies (title, genre, rating, duration)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO movies (title, genre, rating, duration_minutes, status)
+                VALUES (?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, movies.getTitle());
             statement.setString(2, movies.getGenre());
             statement.setString(3, movies.getRating());
             statement.setInt(4, movies.getDuration());
+            statement.setString(5, movies.getStatus());
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.err.print("Failed to save movie: " + e);
         }
+        return false;
     }
 
     @Override
-    public void update(Movies movies) {
+    public boolean update(Movies movies) {
 
         String sql = """
                 UPDATE movies
-                SET title = ?, genre = ?, rating = ?, duration = ?
+                SET title = ?, genre = ?, rating = ?, duration_minutes = ?, status = ?
                 WHERE id = ?
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, movies.getTitle());
             statement.setString(2, movies.getGenre());
             statement.setString(3, movies.getRating());
             statement.setInt(4, movies.getDuration());
-            statement.setInt(5, movies.getId());
+            statement.setString(5, movies.getStatus());
+            statement.setInt(6, movies.getId());
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
             System.err.print("Failed to update movie: " + e);
         }
+        return false;
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
 
         String sql = "DELETE FROM movies WHERE id = ?";
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
 
-            statement.executeUpdate();
+            return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
 
             System.err.print("Failed to delete movie with id: " + id + " ," + e);
         }
+        return false;
     }
 }

@@ -11,4 +11,8 @@ public interface UsersRepo {
     boolean existsByEmail(String email);
 
     Users create(Users user);
+
+    boolean updateProfile(int id, String name, String email);
+
+    boolean updatePassword(int id, String passwordHash);
 }

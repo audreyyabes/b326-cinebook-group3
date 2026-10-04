@@ -10,4 +10,6 @@ public interface ShowtimeService {
     List<ShowtimeSchedule> getShowtimesByMovieId(int movieId);
 
     Showtime getShowtimeById(int id);
+
+    boolean create(Showtime showtime);
 }
