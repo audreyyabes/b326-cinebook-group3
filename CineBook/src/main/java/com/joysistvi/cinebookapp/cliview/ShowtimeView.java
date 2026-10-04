@@ -21,13 +21,17 @@ public class ShowtimeView {
 
     public void show() {
 
+        // ===================== CINEBOOK HEADER =====================
+
         System.out.println("========================================================================================");
-        System.out.println("                      ____ _____ _  _ _____ ____  ____  ____  _  _ ");
-        System.out.println("                     / ___|_   _| || | ____| __ )/ ___|/ ___|| || |");
-        System.out.println("                    | |     | | | || |  _| |  _ \\ |  /| |   | || |");
-        System.out.println("                    | |___  | | | || | |___| |_) | |__| |___| __ |");
-        System.out.println("                     \\____| |_| |_||_|_____|____/\\____|\\____|_||_|");
-        System.out.println("                                  THEATRE CLI v1.0");
+        System.out.println("   ██████╗██╗███╗   ██╗███████╗██████╗  ██████╗  ██████╗ ██╗  ██╗");
+        System.out.println("  ██╔════╝██║████╗  ██║██╔════╝██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝");
+        System.out.println("  ██║     ██║██╔██╗ ██║█████╗  ██████╔╝██║   ██║██║   ██║█████╔╝ ");
+        System.out.println("  ██║     ██║██║╚██╗██║██╔══╝  ██╔══██╗██║   ██║██║   ██║██╔═██╗ ");
+        System.out.println("  ╚██████╗██║██║ ╚████║███████╗██████╔╝╚██████╔╝╚██████╔╝██║  ██╗");
+        System.out.println("   ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝");
+        System.out.println();
+        System.out.println("                         MOVIE TICKET BOOKING SYSTEM");
         System.out.println("========================================================================================");
 
         System.out.println("[ User: Audrey Yabes (Customer) | Location: CineBook Mall - QC | Session: ACTIVE ]");

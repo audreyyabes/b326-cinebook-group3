@@ -22,12 +22,14 @@ public class SeatView {
 
         System.out.println();
         System.out.println("========================================================================================");
-        System.out.println("                      ____ _____ _  _ _____ ____  ____  ____  _  _ ");
-        System.out.println("                     / ___|_   _| || | ____| __ )/ ___|/ ___|| || |");
-        System.out.println("                    | |     | | | || |  _| |  _ \\ |  /| |   | || |");
-        System.out.println("                    | |___  | | | || | |___| |_) | |__| |___| __ |");
-        System.out.println("                     \\____| |_| |_||_|_____|____/\\____|\\____|_||_|");
-        System.out.println("                                  THEATRE CLI v1.0");
+        System.out.println("   ██████╗██╗███╗   ██╗███████╗██████╗  ██████╗  ██████╗ ██╗  ██╗");
+        System.out.println("  ██╔════╝██║████╗  ██║██╔════╝██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝");
+        System.out.println("  ██║     ██║██╔██╗ ██║█████╗  ██████╔╝██║   ██║██║   ██║█████╔╝ ");
+        System.out.println("  ██║     ██║██║╚██╗██║██╔══╝  ██╔══██╗██║   ██║██║   ██║██╔═██╗ ");
+        System.out.println("  ╚██████╗██║██║ ╚████║███████╗██████╔╝╚██████╔╝╚██████╔╝██║  ██╗");
+        System.out.println("   ╚═════╝╚═╝╚═╝  ╚═══╝╚══════╝╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝");
+        System.out.println();
+        System.out.println("                         MOVIE TICKET BOOKING SYSTEM");
         System.out.println("========================================================================================");
 
         System.out.printf(
@@ -40,9 +42,9 @@ public class SeatView {
         System.out.println("----------------------------------------------------------------------------------------");
         System.out.println();
 
-        System.out.println("                       +----------------------------------+");
-        System.out.println("                       |           S C R E E N            |");
-        System.out.println("                       +----------------------------------+");
+        System.out.println("                              +----------------------+");
+        System.out.println("                              |       S C R E E N    |");
+        System.out.println("                              +----------------------+");
         System.out.println();
 
         if (seats.isEmpty()) {
@@ -59,7 +61,9 @@ public class SeatView {
         System.out.println("Legend: [ A1 ] Available  |  [ X ] Reserved/Booked");
         System.out.println("----------------------------------------------------------------------------------------");
 
-        System.out.print("Enter seat codes separated by commas (e.g. A3, A4) or 'B' to cancel: ");
+        System.out.print(
+                "Enter seat codes separated by commas (e.g. A3, A4) or 'B' to cancel: "
+        );
 
         String input = scanner.nextLine().trim();
 
