@@ -29,7 +29,7 @@ public class SeatMapRepoImpl implements SeatMapRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, theaterId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -48,7 +48,7 @@ public class SeatMapRepoImpl implements SeatMapRepo {
     public boolean addSeat(Seat seat) {
         String sql = "INSERT INTO seats (theater_id, seat_code, seat_row, seat_number) VALUES (?, ?, ?, ?)";
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, seat.getTheaterId());
             statement.setString(2, seat.getSeatCode());
             statement.setString(3, seat.getSeatRow());
@@ -63,7 +63,7 @@ public class SeatMapRepoImpl implements SeatMapRepo {
     public boolean deleteSeat(int seatId) {
         String sql = "DELETE FROM seats WHERE id = ?";
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, seatId);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {

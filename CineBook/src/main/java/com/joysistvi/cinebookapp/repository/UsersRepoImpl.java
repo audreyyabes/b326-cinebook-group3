@@ -18,7 +18,7 @@ public class UsersRepoImpl implements UsersRepo {
         String sql = "SELECT id, name, email, password_hash, role, created_at FROM users WHERE email = ?";
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, email);
 
@@ -33,8 +33,7 @@ public class UsersRepoImpl implements UsersRepo {
                         resultSet.getString("email"),
                         resultSet.getString("password_hash"),
                         resultSet.getString("role"),
-                        resultSet.getTimestamp("created_at")
-                );
+                        resultSet.getTimestamp("created_at"));
                 return Optional.of(user);
             }
 
@@ -48,7 +47,7 @@ public class UsersRepoImpl implements UsersRepo {
         String sql = "SELECT 1 FROM users WHERE email = ? LIMIT 1";
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, email);
 
@@ -66,7 +65,7 @@ public class UsersRepoImpl implements UsersRepo {
         String sql = "INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, user.getName());
             statement.setString(2, user.getEmail());
@@ -86,7 +85,7 @@ public class UsersRepoImpl implements UsersRepo {
     public boolean updateProfile(int id, String name, String email) {
         String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, name);
             statement.setString(2, email);
             statement.setInt(3, id);
@@ -100,7 +99,7 @@ public class UsersRepoImpl implements UsersRepo {
     public boolean updatePassword(int id, String passwordHash) {
         String sql = "UPDATE users SET password_hash = ? WHERE id = ?";
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, passwordHash);
             statement.setInt(2, id);
             return statement.executeUpdate() > 0;

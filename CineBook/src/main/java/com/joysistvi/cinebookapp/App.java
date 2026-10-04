@@ -56,10 +56,10 @@ public class App {
             bootstrap.createDatabaseIfNotExists();
             migration.migrate();
             new CinemaDataSeeder(databaseConnection).run();
-                        if (args.length > 0 && "--seed-cinema-only".equals(args[0])) {
-                                System.out.println("Cinema seed completed. No users, bookings, or payments were seeded.");
-                                return;
-                        }
+            if (args.length > 0 && "--seed-cinema-only".equals(args[0])) {
+                System.out.println("Cinema seed completed. No users, bookings, or payments were seeded.");
+                return;
+            }
             databaseConnection.testConnection();
             adminAccountInitializer.run();
         } catch (RuntimeException e) {

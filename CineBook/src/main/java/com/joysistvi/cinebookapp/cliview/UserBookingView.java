@@ -29,7 +29,8 @@ public class UserBookingView {
             CliLayout.println("-".repeat(88));
             CliLayout.print("Enter booking ID to view receipt, or B to return: ");
             String option = scanner.nextLine().trim();
-            if (option.equalsIgnoreCase("B")) return;
+            if (option.equalsIgnoreCase("B"))
+                return;
             try {
                 Integer.parseInt(option);
                 String[] booking = bookings.stream().map(value -> value.split("\\s*\\|\\s*"))

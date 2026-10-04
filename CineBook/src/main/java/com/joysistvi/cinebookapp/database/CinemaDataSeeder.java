@@ -17,17 +17,17 @@ public class CinemaDataSeeder {
 
     private static final Logger logger = LoggerFactory.getLogger(CinemaDataSeeder.class);
     private static final String[][] MOVIES = {
-            {"Avengers: Endgame", "Action, Adventure", "PG-13", "181"},
-            {"Spider-Man: No Way Home", "Action, Adventure", "PG-13", "148"},
-            {"Inside Out 2", "Animation, Comedy", "PG", "96"},
-            {"The Batman", "Action, Crime", "PG-13", "176"},
-            {"Interstellar", "Science Fiction, Drama", "PG-13", "169"}
+            { "Avengers: Endgame", "Action, Adventure", "PG-13", "181" },
+            { "Spider-Man: No Way Home", "Action, Adventure", "PG-13", "148" },
+            { "Inside Out 2", "Animation, Comedy", "PG", "96" },
+            { "The Batman", "Action, Crime", "PG-13", "176" },
+            { "Interstellar", "Science Fiction, Drama", "PG-13", "169" }
     };
     private static final String[][] THEATERS = {
-            {"Cinema 1", "CineBook Mall - Quezon City"},
-            {"Cinema 2", "CineBook Mall - Quezon City"}
+            { "Cinema 1", "CineBook Mall - Quezon City" },
+            { "Cinema 2", "CineBook Mall - Quezon City" }
     };
-    private static final String[] SEAT_ROWS = {"A", "B", "C"};
+    private static final String[] SEAT_ROWS = { "A", "B", "C" };
     private static final int SEATS_PER_ROW = 5;
 
     private final DatabaseConnection databaseConnection;
@@ -69,7 +69,8 @@ public class CinemaDataSeeder {
             try (PreparedStatement exists = connection.prepareStatement(existsSql)) {
                 exists.setString(1, movie[0]);
                 try (ResultSet result = exists.executeQuery()) {
-                    if (result.next()) continue;
+                    if (result.next())
+                        continue;
                 }
             }
             try (PreparedStatement insert = connection.prepareStatement(insertSql)) {
@@ -87,7 +88,8 @@ public class CinemaDataSeeder {
         try (PreparedStatement find = connection.prepareStatement(findSql)) {
             find.setString(1, name);
             try (ResultSet result = find.executeQuery()) {
-                if (result.next()) return result.getInt("id");
+                if (result.next())
+                    return result.getInt("id");
             }
         }
 
@@ -98,7 +100,8 @@ public class CinemaDataSeeder {
             insert.setString(2, location);
             insert.executeUpdate();
             try (ResultSet keys = insert.getGeneratedKeys()) {
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next())
+                    return keys.getInt(1);
             }
         }
         throw new SQLException("Could not retrieve ID for theater " + name);
@@ -122,7 +125,8 @@ public class CinemaDataSeeder {
                         exists = result.next();
                     }
                 }
-                if (exists) continue;
+                if (exists)
+                    continue;
                 try (PreparedStatement insert = connection.prepareStatement(insertSql)) {
                     insert.setInt(1, theaterId);
                     insert.setString(2, seatCode);
@@ -153,7 +157,8 @@ public class CinemaDataSeeder {
             try (PreparedStatement movieQuery = connection.prepareStatement(findMovieSql)) {
                 movieQuery.setString(1, MOVIES[movieIndex][0]);
                 try (ResultSet movie = movieQuery.executeQuery()) {
-                    if (!movie.next()) continue;
+                    if (!movie.next())
+                        continue;
                     movieId = movie.getInt("id");
                     duration = movie.getInt("duration_minutes");
                 }
@@ -164,7 +169,8 @@ public class CinemaDataSeeder {
                 try (PreparedStatement theaterQuery = connection.prepareStatement(findTheaterSql)) {
                     theaterQuery.setInt(1, theaterId);
                     try (ResultSet theater = theaterQuery.executeQuery()) {
-                        if (!theater.next() || !"active".equalsIgnoreCase(theater.getString("status"))) continue;
+                        if (!theater.next() || !"active".equalsIgnoreCase(theater.getString("status")))
+                            continue;
                     }
                 }
 
@@ -172,7 +178,8 @@ public class CinemaDataSeeder {
                     exists.setInt(1, movieId);
                     exists.setInt(2, theaterId);
                     try (ResultSet result = exists.executeQuery()) {
-                        if (result.next()) continue;
+                        if (result.next())
+                            continue;
                     }
                 }
 

@@ -151,9 +151,9 @@ public class CinemaCliView {
         while (active) {
             page("Admin Portal | Movie Management");
             List<Movies> movies = moviesController.handleAllMovies();
-                CliLayout.table(List.of("ID", "Title", "Genre", "Rating", "Duration", "Status"), movies.stream()
+            CliLayout.table(List.of("ID", "Title", "Genre", "Rating", "Duration", "Status"), movies.stream()
                     .map(movie -> List.of(movie.getId(), movie.getTitle(), movie.getGenre(), movie.getRating(),
-                        movie.getDuration() + " mins", movie.getStatus()))
+                            movie.getDuration() + " mins", movie.getStatus()))
                     .toList());
             CliLayout.println("\n[A] Add | [E] Edit | [T] Toggle Active/Inactive | [D] Delete | [B] Back");
             switch (prompt("Select Action: ").toUpperCase()) {
@@ -190,9 +190,12 @@ public class CinemaCliView {
         String genre = prompt("Genre [" + movie.getGenre() + "]: ");
         String rating = prompt("Rating [" + movie.getRating() + "]: ");
         String duration = prompt("Duration in minutes [" + movie.getDuration() + "]: ");
-        if (!title.isBlank()) movie.setTitle(title);
-        if (!genre.isBlank()) movie.setGenre(genre);
-        if (!rating.isBlank()) movie.setRating(rating);
+        if (!title.isBlank())
+            movie.setTitle(title);
+        if (!genre.isBlank())
+            movie.setGenre(genre);
+        if (!rating.isBlank())
+            movie.setRating(rating);
         if (!duration.isBlank()) {
             try {
                 movie.setDuration(Integer.parseInt(duration));
@@ -221,7 +224,8 @@ public class CinemaCliView {
 
     private void deleteMovie() {
         int id = readInt("Movie ID to delete: ");
-        if (!"Y".equalsIgnoreCase(prompt("Delete movie " + id + "? (Y/N): "))) return;
+        if (!"Y".equalsIgnoreCase(prompt("Delete movie " + id + "? (Y/N): ")))
+            return;
         pause(moviesController.handleDeleteMovies(id)
                 ? "Movie deleted. Press [ENTER] to continue..."
                 : "Movie could not be deleted. It may have showtimes. Press [ENTER] to continue...");
@@ -239,14 +243,14 @@ public class CinemaCliView {
         }
         CliLayout.println("Active movies:");
         CliLayout.table(List.of("ID", "Title", "Duration"), movies.stream()
-            .map(movie -> List.of(movie.getId(), movie.getTitle(), movie.getDuration() + " mins"))
-            .toList());
+                .map(movie -> List.of(movie.getId(), movie.getTitle(), movie.getDuration() + " mins"))
+                .toList());
         int movieId = readInt("Movie ID: ");
         Movies movie = movies.stream().filter(item -> item.getId() == movieId).findFirst().orElse(null);
         CliLayout.println("\nActive theaters:");
         CliLayout.table(List.of("ID", "Theater", "Location"), theaters.stream()
-            .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation()))
-            .toList());
+                .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation()))
+                .toList());
         int theaterId = readInt("Theater ID: ");
         Theater theater = theaters.stream().filter(item -> item.getId() == theaterId).findFirst().orElse(null);
         if (movie == null || theater == null) {
@@ -289,7 +293,7 @@ public class CinemaCliView {
         boolean active = true;
         while (active) {
             page("Admin Portal | Manage User Accounts");
-                CliLayout.table(List.of("ID", "Name", "Email", "Role"), usersController.handleViewAllUsers().stream()
+            CliLayout.table(List.of("ID", "Name", "Email", "Role"), usersController.handleViewAllUsers().stream()
                     .map(account -> List.of(account.getId(), account.getName(), account.getEmail(), account.getRole()))
                     .toList());
             CliLayout.println("\n[A] Add Account | [D] Delete Account | [B] Back");
@@ -327,7 +331,8 @@ public class CinemaCliView {
             pause("You cannot delete the account currently in use. Press [ENTER] to continue...");
             return;
         }
-        if (!"Y".equalsIgnoreCase(prompt("Delete user " + id + "? (Y/N): "))) return;
+        if (!"Y".equalsIgnoreCase(prompt("Delete user " + id + "? (Y/N): ")))
+            return;
         pause(usersController.handleDeleteUser(id)
                 ? "User deleted. Press [ENTER] to continue..."
                 : "User could not be deleted. The last admin account and accounts with bookings are protected. Press [ENTER] to continue...");
@@ -339,22 +344,22 @@ public class CinemaCliView {
 
     private void browseMovies(Users user, boolean allowReservation) {
         page(user == null ? "Guest | Catalog View"
-            : "User: " + user.getName() + " (Customer) | Catalog View");
+                : "User: " + user.getName() + " (Customer) | Catalog View");
         CliLayout.println("\n" + centered(">>> NOW SHOWING MOVIES <<<") + "\n");
         List<Movies> movies = moviesController.handleAllMovies().stream()
-            .filter(movie -> "active".equalsIgnoreCase(movie.getStatus()))
-            .toList();
+                .filter(movie -> "active".equalsIgnoreCase(movie.getStatus()))
+                .toList();
         if (movies.isEmpty()) {
             pause("No movies found. Press [ENTER] to return...");
             return;
         }
         CliLayout.table(List.of("ID", "Title", "Genre", "Rating", "Duration"), movies.stream()
-            .map(movie -> List.of(movie.getId(), movie.getTitle(), movie.getGenre(), movie.getRating(),
-                movie.getDuration() + " mins"))
-            .toList());
+                .map(movie -> List.of(movie.getId(), movie.getTitle(), movie.getGenre(), movie.getRating(),
+                        movie.getDuration() + " mins"))
+                .toList());
 
         String selection = prompt("Select a Movie ID" + (allowReservation ? " to reserve" : " to view showtimes")
-            + " or B to go back: ");
+                + " or B to go back: ");
         if (selection.equalsIgnoreCase("B")) {
             return;
         }
@@ -370,7 +375,8 @@ public class CinemaCliView {
             DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             CliLayout.table(List.of("Showtime ID", "Theater", "Date & Start Time", "End Time", "Price"),
                     showtimes.stream().map(showtime -> List.of(showtime.getId(), showtime.getTheaterName(),
-                            showtime.getStartTime().format(dateTimeFormat), showtime.getEndTime().format(dateTimeFormat),
+                            showtime.getStartTime().format(dateTimeFormat),
+                            showtime.getEndTime().format(dateTimeFormat),
                             String.format("₱ %.2f", showtime.getTicketPrice())))
                             .toList());
             if (allowReservation && user != null) {
@@ -397,7 +403,8 @@ public class CinemaCliView {
         page("Customer Portal | Showtime Schedule");
         List<List<?>> rows = new ArrayList<>();
         for (Movies movie : moviesController.handleAllMovies()) {
-            if (!"active".equalsIgnoreCase(movie.getStatus())) continue;
+            if (!"active".equalsIgnoreCase(movie.getStatus()))
+                continue;
             for (ShowtimeSchedule showtime : showtimeController.handleViewShowtimesByMovieId(movie.getId())) {
                 rows.add(List.of(movie.getTitle(), showtime.getId(), showtime.getTheaterName(),
                         showtime.getStartTime(), showtime.getEndTime(),
@@ -436,7 +443,8 @@ public class CinemaCliView {
         Map<String, List<String>> rows = new LinkedHashMap<>();
         for (String code : seatIds.keySet()) {
             int rowEnd = 0;
-            while (rowEnd < code.length() && Character.isLetter(code.charAt(rowEnd))) rowEnd++;
+            while (rowEnd < code.length() && Character.isLetter(code.charAt(rowEnd)))
+                rowEnd++;
             String row = code.substring(0, rowEnd);
             rows.computeIfAbsent(row, ignored -> new ArrayList<>()).add(code);
         }
@@ -451,7 +459,8 @@ public class CinemaCliView {
         CliLayout.println("Legend: [ A1 ] Available  |  [ X ] Reserved / Occupied");
         CliLayout.println(DIVIDER);
         String selection = prompt("Enter seat codes separated by commas (e.g., A3, A4) or 'B' to cancel: ");
-        if (selection.equalsIgnoreCase("B")) return;
+        if (selection.equalsIgnoreCase("B"))
+            return;
 
         List<Integer> selectedIds = new ArrayList<>();
         List<String> selectedCodes = new ArrayList<>();
@@ -469,17 +478,17 @@ public class CinemaCliView {
             selectedCodes.add(code);
         }
         Theater theater = theaterController.handleViewAllTheater().stream()
-            .filter(item -> item.getName().equals(showtime.getTheaterName())).findFirst().orElse(null);
+                .filter(item -> item.getName().equals(showtime.getTheaterName())).findFirst().orElse(null);
         String theaterLabel = showtime.getTheaterName();
         if (theater != null && theater.getLocation() != null && !theater.getLocation().isBlank()) {
             theaterLabel += " (" + theater.getLocation() + ")";
         }
         DateTimeFormatter receiptTime = DateTimeFormatter.ofPattern("yyyy-MM-dd ' @ ' hh:mm a");
         String showtimeLabel = showtime.getStartTime().format(receiptTime) + " - "
-            + showtime.getEndTime().format(DateTimeFormatter.ofPattern("hh:mm a"));
+                + showtime.getEndTime().format(DateTimeFormatter.ofPattern("hh:mm a"));
         new PaymentView(bookingController, bookingSeatsController, paymentController, scanner).show(
-            user.getName(), user.getId(), showtime.getId(), movie.getTitle(), theaterLabel, showtimeLabel,
-            selectedCodes, selectedIds, showtime.getTicketPrice());
+                user.getName(), user.getId(), showtime.getId(), movie.getTitle(), theaterLabel, showtimeLabel,
+                selectedCodes, selectedIds, showtime.getTicketPrice());
     }
 
     private void accountSettings(Users user) {
@@ -503,8 +512,10 @@ public class CinemaCliView {
     private void updateAccountProfile(Users user) {
         String name = prompt("Full name [" + user.getName() + "]: ");
         String email = prompt("Email [" + user.getEmail() + "]: ");
-        if (name.isBlank()) name = user.getName();
-        if (email.isBlank()) email = user.getEmail();
+        if (name.isBlank())
+            name = user.getName();
+        if (email.isBlank())
+            email = user.getEmail();
         if (accountController.updateProfile(user, name, email)) {
             user.setName(name);
             user.setEmail(email);

@@ -62,9 +62,9 @@ public class BookingSeatsView {
 
         CliLayout.println("\nBOOKING SEATS");
         CliLayout.table(List.of("ID", "Booking ID", "Seat ID", "Price"), bookingSeatsList.stream()
-            .map(bookingSeats -> List.of(bookingSeats.getId(), bookingSeats.getBookingId(),
-                bookingSeats.getSeat_id(), String.format("₱%.2f", bookingSeats.getPrice())))
-            .toList());
+                .map(bookingSeats -> List.of(bookingSeats.getId(), bookingSeats.getBookingId(),
+                        bookingSeats.getSeat_id(), String.format("₱%.2f", bookingSeats.getPrice())))
+                .toList());
 
     }
 
@@ -129,8 +129,8 @@ public class BookingSeatsView {
 
     private void displayBookingSeat(BookingSeats bookingSeats) {
         CliLayout.table(List.of("ID", "Booking ID", "Seat ID", "Price"), List.of(List.of(
-            bookingSeats.getId(), bookingSeats.getBookingId(), bookingSeats.getSeat_id(),
-            String.format("₱%.2f", bookingSeats.getPrice()))));
+                bookingSeats.getId(), bookingSeats.getBookingId(), bookingSeats.getSeat_id(),
+                String.format("₱%.2f", bookingSeats.getPrice()))));
     }
 
     private int inputInt() {

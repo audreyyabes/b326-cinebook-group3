@@ -53,8 +53,8 @@ public class TheaterView {
             return;
         }
         CliLayout.table(List.of("ID", "Theater", "Location", "Status"), theaters.stream()
-            .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
-            .toList());
+                .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
+                .toList());
         pause("\nPress [ENTER] to return to Theater Management...");
     }
 
@@ -85,9 +85,12 @@ public class TheaterView {
         String name = prompt("Name [" + current.getName() + "]: ");
         String location = prompt("Location [" + current.getLocation() + "]: ");
         String status = prompt("Status [" + current.getStatus() + "] (active/inactive): ");
-        if (name.isBlank()) name = current.getName();
-        if (location.isBlank()) location = current.getLocation();
-        if (status.isBlank()) status = current.getStatus();
+        if (name.isBlank())
+            name = current.getName();
+        if (location.isBlank())
+            location = current.getLocation();
+        if (status.isBlank())
+            status = current.getStatus();
 
         Theater theater = new Theater(id, name, location, status);
 
@@ -112,8 +115,8 @@ public class TheaterView {
     private void viewTheaterRows() {
         List<Theater> theaters = theaterController.handleViewAllTheater();
         CliLayout.table(List.of("ID", "Theater", "Location", "Status"), theaters.stream()
-            .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
-            .toList());
+                .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
+                .toList());
     }
 
     private void page(String title) {
@@ -140,8 +143,3 @@ public class TheaterView {
         scanner.nextLine();
     }
 }
-
-
-
-
-

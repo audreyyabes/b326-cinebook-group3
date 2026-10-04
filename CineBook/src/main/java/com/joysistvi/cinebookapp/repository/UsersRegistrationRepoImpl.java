@@ -14,7 +14,7 @@ import java.util.List;
 public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
     private final DatabaseConnection databaseConnection;
 
-    public UsersRegistrationRepoImpl(DatabaseConnection dbConnection){
+    public UsersRegistrationRepoImpl(DatabaseConnection dbConnection) {
         this.databaseConnection = dbConnection;
     }
 
@@ -24,17 +24,16 @@ public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
         String query = "SELECT * FROM users";
 
         try (Connection conn = databaseConnection.connect();
-             PreparedStatement prep = conn.prepareStatement(query);
-             ResultSet res = prep.executeQuery()){
+                PreparedStatement prep = conn.prepareStatement(query);
+                ResultSet res = prep.executeQuery()) {
 
-            while (res.next()){
+            while (res.next()) {
                 users.add(new UsersRegistration(
                         res.getInt("id"),
                         res.getString("name"),
                         res.getString("email"),
                         res.getString("password_hash"),
-                        res.getString("role")
-                ));
+                        res.getString("role")));
             }
         } catch (Exception e) {
             System.out.println("Get all user: " + e.getMessage());
@@ -54,7 +53,7 @@ public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
         String hashedPassword = BCrypt.hashpw(password_hash, BCrypt.gensalt());
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement prep = connection.prepareStatement(query)) {
+                PreparedStatement prep = connection.prepareStatement(query)) {
 
             prep.setString(1, name);
             prep.setString(2, email);
@@ -92,7 +91,7 @@ public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
                     }
                     if ("admin".equalsIgnoreCase(resultSet.getString("role"))) {
                         try (PreparedStatement count = connection.prepareStatement(countAdminsSql);
-                             ResultSet adminCount = count.executeQuery()) {
+                                ResultSet adminCount = count.executeQuery()) {
                             if (adminCount.next() && adminCount.getInt(1) <= 1) {
                                 connection.rollback();
                                 return false;
@@ -112,6 +111,5 @@ public class UsersRegistrationRepoImpl implements UsersRegistrationRepo {
             return false;
         }
     }
-
 
 }

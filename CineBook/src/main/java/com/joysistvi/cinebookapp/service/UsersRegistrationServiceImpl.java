@@ -22,7 +22,6 @@ public class UsersRegistrationServiceImpl implements UsersRegistrationService {
         return id > 0 && usersRegistrationRepo.deleteUser(id);
     }
 
-
     @Override
     public UsersRegistration login(String email, String password_hash) {
         return null;

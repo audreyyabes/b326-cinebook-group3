@@ -68,11 +68,11 @@ public class BookingView {
                 pauseWithMessage("There are no pending payments. Press [ENTER] to return...");
                 return;
             }
-                CliLayout.table(List.of("ID", "Booking Code", "Customer", "Total", "Payment"),
+            CliLayout.table(List.of("ID", "Booking Code", "Customer", "Total", "Payment"),
                     pending.stream().map(booking -> List.of(booking.getId(), booking.getBookingCode(),
-                        booking.getCustomerName(), String.format("₱%,.2f", booking.getTotalAmount()),
-                        booking.getPaymentDetails()))
-                        .toList());
+                            booking.getCustomerName(), String.format("₱%,.2f", booking.getTotalAmount()),
+                            booking.getPaymentDetails()))
+                            .toList());
 
             String selection = prompt("Enter booking ID to confirm, or B to return: ");
             if (selection.equalsIgnoreCase("B")) {
@@ -105,8 +105,7 @@ public class BookingView {
 
     private void displayBookings() {
 
-        List<BookingAudit> bookings =
-                bookingController.getBookingAudit();
+        List<BookingAudit> bookings = bookingController.getBookingAudit();
 
         if (bookings.isEmpty()) {
             CliLayout.println("No bookings found.");
@@ -115,10 +114,10 @@ public class BookingView {
         }
 
         CliLayout.table(List.of("ID", "Code", "Customer", "Total", "Booking Status", "Payment Details"),
-            bookings.stream().map(booking -> List.of(booking.getId(), booking.getBookingCode(),
-                booking.getCustomerName(), String.format("₱%,.2f", booking.getTotalAmount()),
-                booking.getBookingStatus(), booking.getPaymentDetails()))
-                .toList());
+                bookings.stream().map(booking -> List.of(booking.getId(), booking.getBookingCode(),
+                        booking.getCustomerName(), String.format("₱%,.2f", booking.getTotalAmount()),
+                        booking.getBookingStatus(), booking.getPaymentDetails()))
+                        .toList());
     }
 
     private void displayFinancialMetrics() {
@@ -135,25 +134,21 @@ public class BookingView {
 
         CliLayout.printf(
                 "Total Confirmed Revenue : ₱%,.2f%n",
-                confirmedRevenue
-        );
+                confirmedRevenue);
 
         CliLayout.printf(
                 "Pending Unpaid Total    : ₱%,.2f%n",
-                pendingTotal
-        );
+                pendingTotal);
 
         CliLayout.println(
                 "Total Tickets Reserved  : "
                         + totalTickets
-                        + " seats"
-        );
+                        + " seats");
     }
 
     private void processPendingPayment() {
 
-        List<BookingAudit> bookings =
-                bookingController.getBookingAudit();
+        List<BookingAudit> bookings = bookingController.getBookingAudit();
 
         BookingAudit pendingBooking = null;
 
@@ -171,8 +166,7 @@ public class BookingView {
 
             CliLayout.println();
             CliLayout.println(
-                    "There are no pending payments."
-            );
+                    "There are no pending payments.");
 
             pause();
 

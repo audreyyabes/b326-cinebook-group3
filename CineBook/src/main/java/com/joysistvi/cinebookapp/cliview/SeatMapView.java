@@ -27,8 +27,9 @@ public class SeatMapView {
             CliLayout.println("[ Admin Portal | Theater Seat Maps ]");
             CliLayout.println("-".repeat(88));
             List<Theater> theaters = theaterController.handleViewAllTheater();
-                CliLayout.table(List.of("ID", "Theater", "Location", "Status"), theaters.stream()
-                    .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
+            CliLayout.table(List.of("ID", "Theater", "Location", "Status"), theaters.stream()
+                    .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(),
+                            theater.getStatus()))
                     .toList());
             String selection = prompt("Enter Theater ID to manage seats (B to go back): ");
             if (selection.equalsIgnoreCase("B")) {

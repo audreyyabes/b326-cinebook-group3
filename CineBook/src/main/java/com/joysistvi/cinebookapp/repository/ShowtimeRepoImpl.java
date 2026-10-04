@@ -38,7 +38,7 @@ public class ShowtimeRepoImpl implements ShowtimeRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, movieId);
 
@@ -51,8 +51,7 @@ public class ShowtimeRepoImpl implements ShowtimeRepo {
                             resultSet.getString("theater_name"),
                             resultSet.getTimestamp("start_time").toLocalDateTime(),
                             resultSet.getTimestamp("end_time").toLocalDateTime(),
-                            resultSet.getDouble("ticket_price")
-                    );
+                            resultSet.getDouble("ticket_price"));
 
                     schedules.add(schedule);
                 }
@@ -81,7 +80,7 @@ public class ShowtimeRepoImpl implements ShowtimeRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
 
@@ -95,8 +94,7 @@ public class ShowtimeRepoImpl implements ShowtimeRepo {
                             resultSet.getTimestamp("start_time").toLocalDateTime(),
                             resultSet.getTimestamp("end_time").toLocalDateTime(),
                             resultSet.getDouble("ticket_price"),
-                            resultSet.getString("status")
-                    );
+                            resultSet.getString("status"));
                 }
             }
 
@@ -115,7 +113,7 @@ public class ShowtimeRepoImpl implements ShowtimeRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, showtime.getMovieId());
             statement.setInt(2, showtime.getTheaterId());
             statement.setTimestamp(3, java.sql.Timestamp.valueOf(showtime.getStartTime()));

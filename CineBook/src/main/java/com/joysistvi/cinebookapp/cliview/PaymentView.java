@@ -25,9 +25,9 @@ public class PaymentView {
     private final Scanner scanner;
 
     public PaymentView(BookingController bookingController,
-                        BookingSeatsController bookingSeatsController,
-                        PaymentController paymentController,
-                        Scanner scanner) {
+            BookingSeatsController bookingSeatsController,
+            PaymentController paymentController,
+            Scanner scanner) {
         this.bookingController = bookingController;
         this.bookingSeatsController = bookingSeatsController;
         this.paymentController = paymentController;
@@ -35,7 +35,7 @@ public class PaymentView {
     }
 
     public void show(String customerName, int userId, int showtimeId, String movieTitle, String theaterLabel,
-                      String showtimeLabel, List<String> seatCodes, List<Integer> seatIds, double ticketPrice) {
+            String showtimeLabel, List<String> seatCodes, List<Integer> seatIds, double ticketPrice) {
 
         double totalAmount = ticketPrice * seatIds.size();
 
@@ -133,8 +133,10 @@ public class PaymentView {
         };
     }
 
-    // The booking code is a business key we generate ourselves, like CB-20261001-003,
-    // so we re-fetch the booking by that code to get the id the database assigned to it.
+    // The booking code is a business key we generate ourselves, like
+    // CB-20261001-003,
+    // so we re-fetch the booking by that code to get the id the database assigned
+    // to it.
     private Booking findBookingByCode(String bookingCode) {
         List<Booking> bookings = bookingController.getAllBookings();
         for (Booking booking : bookings) {
@@ -145,7 +147,8 @@ public class PaymentView {
         return null;
     }
 
-    // Builds a code like CB-20261001-003: "CB" + today's date + a daily sequence number.
+    // Builds a code like CB-20261001-003: "CB" + today's date + a daily sequence
+    // number.
     private String generateBookingCode() {
         String todayPrefix = "CB-" + LocalDate.now().format(BOOKING_CODE_DATE_FORMAT) + "-";
 

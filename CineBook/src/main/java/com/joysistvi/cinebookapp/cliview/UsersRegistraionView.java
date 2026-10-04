@@ -32,8 +32,8 @@ public class UsersRegistraionView {
             return;
         }
         CliLayout.table(List.of("ID", "Username", "Email", "Role"), users.stream()
-            .map(user -> List.of(user.getId(), user.getName(), user.getEmail(), user.getRole()))
-            .toList());
+                .map(user -> List.of(user.getId(), user.getName(), user.getEmail(), user.getRole()))
+                .toList());
     }
 
     private void handleUsersRegistration(UsersRegistrationController usersRegistrationController, Scanner scanner) {

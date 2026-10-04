@@ -63,7 +63,8 @@ public final class CliLayout {
             Object value = column < cells.size() ? cells.get(column) : "";
             String text = normalizeCell(value);
             Object sourceValue = sourceRow instanceof List<?> source && column < source.size()
-                    ? source.get(column) : value;
+                    ? source.get(column)
+                    : value;
             if (allowNumericAlignment && sourceValue instanceof Number) {
                 System.out.printf("%" + widths[column] + "s", text);
             } else {

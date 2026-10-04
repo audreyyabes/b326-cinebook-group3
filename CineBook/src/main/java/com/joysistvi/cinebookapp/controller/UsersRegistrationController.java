@@ -11,6 +11,7 @@ public class UsersRegistrationController {
     public UsersRegistrationController(UsersRegistrationService usersRegistrationService) {
         this.usersRegistrationService = usersRegistrationService;
     }
+
     public enum Role {
         CUSTOMER,
         ADMIN
@@ -20,8 +21,8 @@ public class UsersRegistrationController {
         return usersRegistrationService.getAllUsers();
     }
 
-    public boolean handleRegister(String name,String email, String password_hash) {
-        return usersRegistrationService.registerUser(name,email, password_hash);
+    public boolean handleRegister(String name, String email, String password_hash) {
+        return usersRegistrationService.registerUser(name, email, password_hash);
     }
 
     public boolean handleRegister(String name, String email, String password_hash, String role) {
