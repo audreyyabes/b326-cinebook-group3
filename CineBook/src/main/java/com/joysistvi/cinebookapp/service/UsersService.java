@@ -11,4 +11,8 @@ public interface UsersService {
     boolean existsByEmail(String email);
 
     Users createAdmin(String name, String email, String password);
+
+    boolean updateProfile(Users user, String name, String email);
+
+    boolean changePassword(Users user, String currentPassword, String newPassword);
 }

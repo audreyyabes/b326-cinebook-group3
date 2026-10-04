@@ -14,6 +14,15 @@ public class BookingSeatsServiceImpl implements BookingSeatsService {
     }
 
     @Override
+    public boolean createBookingSeats(BookingSeats bookingSeats) {
+        if (bookingSeats == null) {
+            System.out.println("Invalid Booking Seat...");
+            return false;
+        }
+        return bookingSeatsRepo.createBookingSeats(bookingSeats);
+    }
+
+    @Override
     public List<BookingSeats> getAllBookedSeats() {
         return bookingSeatsRepo.getAllBookedSeats();
     }

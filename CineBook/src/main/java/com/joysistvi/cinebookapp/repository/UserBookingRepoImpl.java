@@ -29,7 +29,7 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, userId);
 
@@ -73,20 +73,20 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
 
                 String showtime = resultSet.getInt("showtime_id")
-                                + " | "
-                                + resultSet.getString("title")
-                                + " | "
-                                + resultSet.getString("theater_name")
-                                + " | "
-                                + resultSet.getTimestamp("start_time")
-                                + " | ₱"
-                                + resultSet.getDouble("ticket_price");
+                        + " | "
+                        + resultSet.getString("title")
+                        + " | "
+                        + resultSet.getString("theater_name")
+                        + " | "
+                        + resultSet.getTimestamp("start_time")
+                        + " | ₱"
+                        + resultSet.getDouble("ticket_price");
 
                 showtimes.add(showtime);
             }
@@ -135,7 +135,7 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, showtimeId);
             statement.setInt(2, showtimeId);
@@ -145,10 +145,10 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                 while (resultSet.next()) {
 
                     String seat = resultSet.getInt("id")
-                                    + " | "
-                                    + resultSet.getString("seat_code")
-                                    + " | "
-                                    + resultSet.getString("seat_status");
+                            + " | "
+                            + resultSet.getString("seat_code")
+                            + " | "
+                            + resultSet.getString("seat_status");
 
                     seats.add(seat);
                 }
@@ -167,8 +167,7 @@ public class UserBookingRepoImpl implements UserBookingRepo {
             int showtimeId,
             List<Integer> seatIds,
             double totalAmount,
-            String paymentMethod
-    ) {
+            String paymentMethod) {
 
         String bookingSql = """
                 INSERT INTO bookings
@@ -214,15 +213,12 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
             int bookingId;
 
-            try (PreparedStatement statement =
-                         connection.prepareStatement(
-                                 bookingSql,
-                                 Statement.RETURN_GENERATED_KEYS
-                         )) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    bookingSql,
+                    Statement.RETURN_GENERATED_KEYS)) {
 
-                String bookingCode =
-                        "CB-"
-                                + System.currentTimeMillis();
+                String bookingCode = "CB-"
+                        + System.currentTimeMillis();
 
                 statement.setString(1, bookingCode);
                 statement.setInt(2, userId);
@@ -231,8 +227,7 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
                 statement.executeUpdate();
 
-                try (ResultSet keys =
-                             statement.getGeneratedKeys()) {
+                try (ResultSet keys = statement.getGeneratedKeys()) {
 
                     if (!keys.next()) {
 
@@ -262,9 +257,8 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
             try (PreparedStatement statement = connection.prepareStatement(paymentSql)) {
 
-                String paymentReference =
-                        "PAY-"
-                                + System.currentTimeMillis();
+                String paymentReference = "PAY-"
+                        + System.currentTimeMillis();
 
                 statement.setInt(1, bookingId);
                 statement.setString(2, paymentReference);
@@ -315,12 +309,22 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
         String sql = """
                 SELECT
+                    b.id,
                     b.booking_code,
                     m.title,
                     st.start_time,
                     t.name AS theater_name,
                     b.total_amount,
-                    b.status
+                    b.status AS booking_status,
+                    COALESCE((
+                        SELECT GROUP_CONCAT(s.seat_code ORDER BY s.seat_row, s.seat_number SEPARATOR ', ')
+                        FROM booking_seats bs
+                        JOIN seats s ON s.id = bs.seat_id
+                        WHERE bs.booking_id = b.id
+                    ), '') AS seat_codes,
+                    COALESCE(p.payment_method, '') AS payment_method,
+                    COALESCE(p.payment_reference, '') AS payment_reference,
+                    COALESCE(p.status, '') AS payment_status
 
                 FROM bookings b
 
@@ -333,13 +337,16 @@ public class UserBookingRepoImpl implements UserBookingRepo {
                 JOIN theaters t
                     ON st.theater_id = t.id
 
+                LEFT JOIN payments p
+                    ON p.booking_id = b.id
+
                 WHERE b.user_id = ?
 
                 ORDER BY b.booking_date DESC
                 """;
 
         try (Connection connection = databaseConnection.connect();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, userId);
 
@@ -347,18 +354,27 @@ public class UserBookingRepoImpl implements UserBookingRepo {
 
                 while (resultSet.next()) {
 
-                    String booking =
-                            resultSet.getString("booking_code")
-                                    + " | "
-                                    + resultSet.getString("title")
-                                    + " | "
-                                    + resultSet.getTimestamp("start_time")
-                                    + " | "
-                                    + resultSet.getString("theater_name")
-                                    + " | ₱"
-                                    + resultSet.getDouble("total_amount")
-                                    + " | "
-                                    + resultSet.getString("status");
+                    String booking = resultSet.getInt("id")
+                            + " | "
+                            + resultSet.getString("booking_code")
+                            + " | "
+                            + resultSet.getString("title")
+                            + " | "
+                            + resultSet.getTimestamp("start_time")
+                            + " | "
+                            + resultSet.getString("theater_name")
+                            + " | ₱"
+                            + resultSet.getDouble("total_amount")
+                            + " | "
+                            + resultSet.getString("booking_status")
+                            + " | "
+                            + resultSet.getString("seat_codes")
+                            + " | "
+                            + resultSet.getString("payment_method")
+                            + " | "
+                            + resultSet.getString("payment_reference")
+                            + " | "
+                            + resultSet.getString("payment_status");
 
                     bookings.add(booking);
                 }

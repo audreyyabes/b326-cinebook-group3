@@ -9,6 +9,8 @@ public interface UsersRegistrationService {
 
     boolean registerUser(String name, String email, String password_hash);
 
+    boolean registerUser(String name, String email, String password_hash, String role);
+
     UsersRegistration login(String email, String password_hash);
 
     boolean deleteUser(int id);

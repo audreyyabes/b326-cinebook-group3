@@ -21,4 +21,12 @@ public class UsersController {
     public Optional<Users> login(String email, String password) {
         return usersService.authenticate(email, password);
     }
+
+    public boolean updateProfile(Users user, String name, String email) {
+        return usersService.updateProfile(user, name, email);
+    }
+
+    public boolean changePassword(Users user, String currentPassword, String newPassword) {
+        return usersService.changePassword(user, currentPassword, newPassword);
+    }
 }

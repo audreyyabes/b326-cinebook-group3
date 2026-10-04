@@ -8,156 +8,138 @@ import java.util.Scanner;
 
 public class TheaterView {
     private final TheaterController theaterController;
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
     public TheaterView(TheaterController theaterController) {
-        this.theaterController = theaterController;
+        this(theaterController, new Scanner(System.in));
+    }
 
+    public TheaterView(TheaterController theaterController, Scanner scanner) {
+        this.theaterController = theaterController;
+        this.scanner = scanner;
     }
 
     public void runManageTheater() {
-        int theaterChoice;
-        borderComponent();
-        do {
+        boolean active = true;
+        while (active) {
+            page("Admin Portal | Manage Theaters");
             printAdminMenu();
-            theaterChoice = readInt(scanner);
-            switch (theaterChoice) {
-                case 1 -> viewAllTheaters();
-                case 2 -> runTheaterRegistration();
-                case 3 -> updateTheater();
-                case 4 -> deleteTheater();
-                case 0 -> System.out.println("Logging out...");
-                default -> System.out.println("Invalid choice. Try again.");
+            switch (prompt("Select an option [0-4]: ")) {
+                case "1" -> viewAllTheaters();
+                case "2" -> runTheaterRegistration();
+                case "3" -> updateTheater();
+                case "4" -> deleteTheater();
+                case "0" -> active = false;
+                default -> pause("Invalid choice. Press [ENTER] to continue...");
             }
-        } while (theaterChoice != 0);
-
+        }
     }
 
     private static void printAdminMenu() {
-        System.out.println("1 - View all theater");
-        System.out.println("2 - Add theater");
-        System.out.println("3 - Update theater using ID");
-        System.out.println("4 - Delete theater using ID ");
-        System.out.println("0 - Logout");
-        System.out.print("Choice: ");
-    }
-
-    private static int readInt(Scanner scanner) {
-        while (!scanner.hasNextInt()) {
-            System.out.print("Please enter a valid number: ");
-            scanner.next();
-        }
-        int value = scanner.nextInt();
-        scanner.nextLine(); // consume leftover newline
-        return value;
+        CliLayout.println("[1] View All Theaters");
+        CliLayout.println("[2] Add Theater");
+        CliLayout.println("[3] Edit Theater");
+        CliLayout.println("[4] Delete Theater");
+        CliLayout.println("[0] Back to Admin Portal\n");
     }
 
     private void viewAllTheaters() {
+        page("Admin Portal | Theater Directory");
         List<Theater> theaters = theaterController.handleViewAllTheater();
 
         if (theaters.isEmpty()) {
-            System.out.println("No theater found.");
+            CliLayout.println("No theaters found.");
+            pause("Press [ENTER] to return to Theater Management...");
             return;
         }
-        String border = "+" + "-".repeat(6) + "+" + "-".
-                repeat(22) + "+" + "-".repeat(40) + "+";
-
-        System.out.println(border);
-        System.out.printf("| %-4s | %-20s | %-23s | %-11s  |%n", "ID", "Theater Name", "Location", "Status");
-        System.out.println(border);
-
-        for (Theater theater : theaters) {
-            System.out.printf("| %-4d | %-20s | %-23s | %-12s |%n", theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus());
-        }
-
-        System.out.println(border);
+        CliLayout.table(List.of("ID", "Theater", "Location", "Status"), theaters.stream()
+                .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
+                .toList());
+        pause("\nPress [ENTER] to return to Theater Management...");
     }
 
-    private static void borderComponent() {
-        System.out.println("""
-                ========================================================================================
-                                      ____ _____ _  _ _____ ____  ____  ____  _  _
-                                     / ___|_   _| || | ____| __ )/ ___|/ ___|| || |
-                                    | |     | | | || |  _| |  _ \\ |  /| |   | || |
-                                    | |___  | | | || | |___| |_) | |__| |___| __ |
-                                     \\____| |_| |_||_|_____|____/\\____|\\____|_||_|
-                ========================================================================================
-                [ Portal: Manage Theater]
-                ----------------------------------------------------------------------------------------""");
-    }
-
-    public boolean runTheaterRegistration(){
-        addTheater( scanner,  theaterController);
+    public boolean runTheaterRegistration() {
+        addTheater();
         return false;
     }
 
-    private void addTheater(Scanner scanner, TheaterController theaterController) {
-        System.out.println("Name: ");
-        String name = scanner.nextLine();
-        System.out.println("Location: ");
-        String location = scanner.nextLine();
-
-        System.out.println();
-        System.out.println("----------------------------------------------------------------------------------------");
-        System.out.println("[!] Status will automatically assigned: 'active'");
-        System.out.println("[✓] Checking email availability...");
-
+    private void addTheater() {
+        page("Admin Portal | Add Theater");
+        String name = prompt("Theater name: ");
+        String location = prompt("Location: ");
         boolean success = theaterController.handleAddTheater(name, location);
-        System.out.println(success
-                ? "Added successfully!"
-                : "Failed to register.");
+        pause(success ? "Theater added successfully. Press [ENTER] to continue..."
+                : "Theater could not be added. Press [ENTER] to continue...");
     }
 
-    private void updateTheater(){
-        borderComponent();
-        viewAllTheaters();
-        System.out.println("Enter theater ID ");
-        int id = readInt(scanner);
+    private void updateTheater() {
+        page("Admin Portal | Edit Theater");
+        viewTheaterRows();
+        int id = readInt("Theater ID to edit: ");
 
         Theater current = theaterController.handleReadTheaterById(id);
         if (current == null) {
-            System.out.println("No Theater found in ID " + id + ". Please check the ID and try again.");
+            CliLayout.println("No Theater found in ID " + id + ". Please check the ID and try again.");
             return;
         }
-        System.out.println("New Theater name [" + current.getName() + "] (press Enter to keep the current.): ");
-        String name = scanner.nextLine();
-        System.out.println("New Theater location [" + current.getLocation() + "] (press Enter to keep the current.): ");
-        String location = scanner.nextLine();
-        System.out.println("Status: Active and inactive only");
-        System.out.println("New Theater status [" + current.getStatus() + "] (press Enter to keep the current.): ");
-        String status = scanner.next();
+        String name = prompt("Name [" + current.getName() + "]: ");
+        String location = prompt("Location [" + current.getLocation() + "]: ");
+        String status = prompt("Status [" + current.getStatus() + "] (active/inactive): ");
+        if (name.isBlank())
+            name = current.getName();
+        if (location.isBlank())
+            location = current.getLocation();
+        if (status.isBlank())
+            status = current.getStatus();
 
         Theater theater = new Theater(id, name, location, status);
 
         boolean isSuccess = theaterController.handleUpdateTheater(theater);
-        System.out.println(isSuccess ? "Theater updated successfully." : "Failed to update Theater");
-
-        if (isSuccess) {
-            System.out.println();
-            viewAllTheaters(); //read-after-write || refresh after mutation
-        }
+        pause(isSuccess ? "Theater updated successfully. Press [ENTER] to continue..."
+                : "Theater could not be updated. Press [ENTER] to continue...");
     }
 
-    private void deleteTheater(){
-        borderComponent();
-        viewAllTheaters();
-        System.out.println("Enter Theater ID: ");
-        int id = scanner.nextInt();
+    private void deleteTheater() {
+        page("Admin Portal | Delete Theater");
+        viewTheaterRows();
+        int id = readInt("Theater ID to delete: ");
+        if (!"Y".equalsIgnoreCase(prompt("Delete theater " + id + "? (Y/N): "))) {
+            return;
+        }
 
         boolean isSuccess = theaterController.handleDeleteUser(id);
-        System.out.println(isSuccess ? "Theater successfully Delete." : "Failed to Delete Theater");
-
-        if (isSuccess) {
-            System.out.println();
-            viewAllTheaters();
-        }
-
-
+        pause(isSuccess ? "Theater deleted. Press [ENTER] to continue..."
+                : "Theater could not be deleted. Press [ENTER] to continue...");
     }
 
+    private void viewTheaterRows() {
+        List<Theater> theaters = theaterController.handleViewAllTheater();
+        CliLayout.table(List.of("ID", "Theater", "Location", "Status"), theaters.stream()
+                .map(theater -> List.of(theater.getId(), theater.getName(), theater.getLocation(), theater.getStatus()))
+                .toList());
+    }
+
+    private void page(String title) {
+        Header.print();
+        CliLayout.println("[ " + title + " ]");
+        CliLayout.println("-".repeat(88));
+    }
+
+    private String prompt(String label) {
+        CliLayout.print(label);
+        return scanner.nextLine().trim();
+    }
+
+    private int readInt(String label) {
+        try {
+            return Integer.parseInt(prompt(label));
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+    private void pause(String message) {
+        CliLayout.print(message);
+        scanner.nextLine();
+    }
 }
-
-
-
-
-

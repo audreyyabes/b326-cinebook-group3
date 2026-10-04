@@ -12,6 +12,10 @@ public class BookingSeatsController {
     public BookingSeatsController(BookingSeatsService bookingSeatsService) {
         this.bookingSeatsService = bookingSeatsService;
     }
+    public boolean handleCreateBookingSeats(BookingSeats bookingSeats) {
+        return bookingSeatsService.createBookingSeats(bookingSeats);
+    }
+
     public List<BookingSeats> handleAllBookingSeats(){
         return bookingSeatsService.getAllBookedSeats();
     }

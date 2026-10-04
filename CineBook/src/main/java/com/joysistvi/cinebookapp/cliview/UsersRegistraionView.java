@@ -1,6 +1,5 @@
 package com.joysistvi.cinebookapp.cliview;
 
-
 import com.joysistvi.cinebookapp.controller.UsersRegistrationController;
 import com.joysistvi.cinebookapp.model.UsersRegistration;
 
@@ -17,7 +16,7 @@ public class UsersRegistraionView {
         this.scanner = scanner;
     }
 
-    public boolean runUserRegistration(){
+    public boolean runUserRegistration() {
         handleUsersRegistration(usersRegistrationController, scanner);
         return false;
     }
@@ -32,65 +31,39 @@ public class UsersRegistraionView {
             System.out.println("No users found.");
             return;
         }
-        String border = "+" + "-".repeat(6) + "+" + "-".
-                repeat(22) + "+" + "-".repeat(40) + "+";
-
-        System.out.println(border);
-        System.out.printf("| %-4s | %-20s | %-23s | %-11s  |%n", "ID", "Username", "Email", "Role");
-        System.out.println(border);
-
-        for (UsersRegistration user : users) {
-            System.out.printf("| %-4d | %-20s | %-23s | %-12s |%n", user.getId(),user.getName(), user.getEmail(), user.getRole());
-        }
-
-        System.out.println(border);
+        CliLayout.table(List.of("ID", "Username", "Email", "Role"), users.stream()
+                .map(user -> List.of(user.getId(), user.getName(), user.getEmail(), user.getRole()))
+                .toList());
     }
 
-    private void handleUsersRegistration(UsersRegistrationController usersRegistrationController, Scanner scanner){
-        clearScreen();
-
-        System.out.println("""
-========================================================================================
-                      ____ _____ _  _ _____ ____  ____  ____  _  _
-                     / ___|_   _| || | ____| __ )/ ___|/ ___|| || |
-                    | |     | | | || |  _| |  _ \\ |  /| |   | || |
-                    | |___  | | | || | |___| |_) | |__| |___| __ |
-                     \\____| |_| |_||_|_____|____/\\____|\\____|_||_|
-========================================================================================
-[ Portal: Customer Registration ]
-----------------------------------------------------------------------------------------
-                         >>> CREATE CUSTOMER ACCOUNT <<<""");
-        System.out.println("Name: ");
-        String name = scanner.nextLine();
-        System.out.println("Email: ");
-        String email = scanner.nextLine();
-        System.out.println("Password: ");
+    private void handleUsersRegistration(UsersRegistrationController usersRegistrationController, Scanner scanner) {
+        Header.print();
+        CliLayout.println("[ Portal: Customer Registration ]");
+        CliLayout.println("-".repeat(88));
+        CliLayout.println();
+        CliLayout.println("                         >>> CREATE CUSTOMER ACCOUNT <<<");
+        CliLayout.println();
+        CliLayout.print("Full Name        : ");
+        String name = scanner.nextLine().trim();
+        CliLayout.print("Email Address    : ");
+        String email = scanner.nextLine().trim();
+        CliLayout.print("Password         : ");
         String password_hash = scanner.nextLine();
+        CliLayout.print("Confirm Password : ");
+        String confirmation = scanner.nextLine();
 
-        System.out.println();
-        System.out.println("----------------------------------------------------------------------------------------");
-        System.out.println("[!] Account Role automatically assigned: 'customer'");
-        System.out.println("[✓] Checking email availability...");
+        CliLayout.println();
+        CliLayout.println("-".repeat(88));
+        CliLayout.println("[!] Account Role automatically assigned: 'customer'");
+        if (!password_hash.equals(confirmation)) {
+            CliLayout.println("[X] Passwords do not match. No account was created.");
+            return;
+        }
+        CliLayout.println("[✓] Checking email availability...");
 
         boolean success = usersRegistrationController.handleRegister(name, email, password_hash);
-        System.out.println(success
-                ? "Registered successfully! You can now log in."
-                : "Failed to register.");
-    }
-
-    private static void clearScreen() {
-        try {
-            String os = System.getProperty("os.name").toLowerCase();
-            if (os.contains("win")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                new ProcessBuilder("clear").inheritIO().start().waitFor();
-            }
-        } catch (Exception e) {
-            // Fallback if the process can't be started
-            System.out.println("\n".repeat(50));
-        }
-
-
+        CliLayout.println(success
+                ? "[✓] Customer account successfully registered."
+                : "[X] Registration failed. Check whether the email is already in use.");
     }
 }

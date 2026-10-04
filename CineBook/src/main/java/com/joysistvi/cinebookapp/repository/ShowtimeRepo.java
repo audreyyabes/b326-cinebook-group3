@@ -1,12 +1,15 @@
 package com.joysistvi.cinebookapp.repository;
 
 import com.joysistvi.cinebookapp.model.Showtime;
+import com.joysistvi.cinebookapp.model.ShowtimeSchedule;
 
 import java.util.List;
 
 public interface ShowtimeRepo {
 
-    List<Showtime> findAll();
+    List<ShowtimeSchedule> getShowtimesByMovieId(int movieId);
 
-    List<Showtime> findByMovieId(int movieId);
+    Showtime getShowtimeById(int id);
+
+    boolean create(Showtime showtime);
 }

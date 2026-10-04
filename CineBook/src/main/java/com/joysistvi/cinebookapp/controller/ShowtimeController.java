@@ -1,6 +1,7 @@
 package com.joysistvi.cinebookapp.controller;
 
 import com.joysistvi.cinebookapp.model.Showtime;
+import com.joysistvi.cinebookapp.model.ShowtimeSchedule;
 import com.joysistvi.cinebookapp.service.ShowtimeService;
 
 import java.util.List;
@@ -13,11 +14,15 @@ public class ShowtimeController {
         this.showtimeService = showtimeService;
     }
 
-    public List<Showtime> getAllShowtimes() {
-        return showtimeService.getAllShowtimes();
+    public List<ShowtimeSchedule> handleViewShowtimesByMovieId(int movieId) {
+        return showtimeService.getShowtimesByMovieId(movieId);
     }
 
-    public List<Showtime> getShowtimesByMovieId(int movieId) {
-        return showtimeService.getShowtimesByMovieId(movieId);
+    public Showtime handleGetShowtimeById(int id) {
+        return showtimeService.getShowtimeById(id);
+    }
+
+    public boolean handleCreateShowtime(Showtime showtime) {
+        return showtimeService.create(showtime);
     }
 }

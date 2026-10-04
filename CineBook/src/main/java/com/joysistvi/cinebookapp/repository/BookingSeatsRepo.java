@@ -6,6 +6,8 @@ import com.joysistvi.cinebookapp.model.BookingSeats;
 import java.util.List;
 
 public interface BookingSeatsRepo {
+    boolean createBookingSeats(BookingSeats bookingSeats);
+
     List<BookingSeats> getAllBookedSeats();
 
     boolean updateBookingSeats(BookingSeats bookingSeats);

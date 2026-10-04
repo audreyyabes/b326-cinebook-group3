@@ -20,13 +20,13 @@ public class BookingSeatsView {
         int choice;
 
         do {
-            System.out.println("\n===== BOOKING SEATS MENU =====");
-            System.out.println("[1] View All Booking Seats");
-            System.out.println("[2] View Booking Seat by ID");
-            System.out.println("[3] Update Booking Seat Price");
-            System.out.println("[4] Delete Booking Seat");
-            System.out.println("[0] Back");
-            System.out.print("Enter choice: ");
+            CliLayout.println("\n===== BOOKING SEATS MENU =====");
+            CliLayout.println("[1] View All Booking Seats");
+            CliLayout.println("[2] View Booking Seat by ID");
+            CliLayout.println("[3] Update Booking Seat Price");
+            CliLayout.println("[4] Delete Booking Seat");
+            CliLayout.println("[0] Back");
+            CliLayout.print("Enter choice: ");
 
             choice = inputInt();
 
@@ -44,10 +44,10 @@ public class BookingSeatsView {
                     deleteBookingSeat();
                     break;
                 case 0:
-                    System.out.println("Returning...");
+                    CliLayout.println("Returning...");
                     break;
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    CliLayout.println("Invalid choice. Please try again.");
             }
 
         } while (choice != 0);
@@ -56,29 +56,26 @@ public class BookingSeatsView {
     private void viewAllBookingSeats() {
         List<BookingSeats> bookingSeatsList = bookingSeatsController.handleAllBookingSeats();
         if (bookingSeatsList == null || bookingSeatsList.isEmpty()) {
-            System.out.println("No booking seats found.");
+            CliLayout.println("No booking seats found.");
             return;
         }
 
-        System.out.println("\n================ BOOKING SEATS ================");
-        System.out.printf("%-5s | %-12s | %-8s | %-10s%n", "ID", "Booking ID", "Seat ID", "Price");
-        System.out.println("------------------------------------------------");
-
-        for (BookingSeats bookingSeats : bookingSeatsList) {
-            displayBookingSeat(bookingSeats);
-        }
-
+        CliLayout.println("\nBOOKING SEATS");
+        CliLayout.table(List.of("ID", "Booking ID", "Seat ID", "Price"), bookingSeatsList.stream()
+                .map(bookingSeats -> List.of(bookingSeats.getId(), bookingSeats.getBookingId(),
+                        bookingSeats.getSeat_id(), String.format("₱%.2f", bookingSeats.getPrice())))
+                .toList());
 
     }
 
     private void viewBookingSeatById() {
-        System.out.print("Enter Booking Seat ID: ");
+        CliLayout.print("Enter Booking Seat ID: ");
         int id = inputInt();
 
         BookingSeats bookingSeats = bookingSeatsController.handleReadBookingSeatsById(id);
 
         if (bookingSeats == null) {
-            System.out.println("Booking seat not found.");
+            CliLayout.println("Booking seat not found.");
             return;
         }
 
@@ -86,17 +83,17 @@ public class BookingSeatsView {
     }
 
     private void updateBookingSeatPrice() {
-        System.out.print("Enter Booking Seat ID to update: ");
+        CliLayout.print("Enter Booking Seat ID to update: ");
         int id = inputInt();
 
         BookingSeats bookingSeats = bookingSeatsController.handleReadBookingSeatsById(id);
 
         if (bookingSeats == null) {
-            System.out.println("Booking seat not found.");
+            CliLayout.println("Booking seat not found.");
             return;
         }
 
-        System.out.print("Enter new price: ");
+        CliLayout.print("Enter new price: ");
         double price = inputDouble();
 
         bookingSeats.setPrice(price);
@@ -104,45 +101,41 @@ public class BookingSeatsView {
         boolean updated = bookingSeatsController.handleUpdateBookingSeats(bookingSeats);
 
         if (updated) {
-            System.out.println("Booking seat price updated successfully.");
+            CliLayout.println("Booking seat price updated successfully.");
         } else {
-            System.out.println("Failed to update booking seat price.");
+            CliLayout.println("Failed to update booking seat price.");
         }
     }
 
     private void deleteBookingSeat() {
-        System.out.print("Enter Booking Seat ID to delete: ");
+        CliLayout.print("Enter Booking Seat ID to delete: ");
         int id = inputInt();
 
         BookingSeats bookingSeats = bookingSeatsController.handleReadBookingSeatsById(id);
 
         if (bookingSeats == null) {
-            System.out.println("Booking seat not found.");
+            CliLayout.println("Booking seat not found.");
             return;
         }
 
         boolean deleted = bookingSeatsController.handleBookingSeats(id);
 
         if (deleted) {
-            System.out.println("Booking seat deleted successfully.");
+            CliLayout.println("Booking seat deleted successfully.");
         } else {
-            System.out.println("Failed to delete booking seat.");
+            CliLayout.println("Failed to delete booking seat.");
         }
     }
 
     private void displayBookingSeat(BookingSeats bookingSeats) {
-        System.out.printf(
-                "%-5d | %-12d | %-8d | %-10.2f%n",
-                bookingSeats.getId(),
-                bookingSeats.getBookingId(),
-                bookingSeats.getSeat_id(),
-                bookingSeats.getPrice()
-        );
+        CliLayout.table(List.of("ID", "Booking ID", "Seat ID", "Price"), List.of(List.of(
+                bookingSeats.getId(), bookingSeats.getBookingId(), bookingSeats.getSeat_id(),
+                String.format("₱%.2f", bookingSeats.getPrice()))));
     }
 
     private int inputInt() {
         while (!scanner.hasNextInt()) {
-            System.out.print("Invalid input. Enter a number: ");
+            CliLayout.print("Invalid input. Enter a number: ");
             scanner.next();
         }
         int value = scanner.nextInt();
@@ -152,7 +145,7 @@ public class BookingSeatsView {
 
     private double inputDouble() {
         while (!scanner.hasNextDouble()) {
-            System.out.print("Invalid input. Enter a valid price: ");
+            CliLayout.print("Invalid input. Enter a valid price: ");
             scanner.next();
         }
         double value = scanner.nextDouble();

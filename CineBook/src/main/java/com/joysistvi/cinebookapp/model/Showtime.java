@@ -12,11 +12,16 @@ public class Showtime {
     private double ticketPrice;
     private String status;
 
-    private String movieTitle;
-    private String genre;
-    private String rating;
-    private int durationMinutes;
-    private String theaterName;
+    public Showtime(int id, int movieId, int theaterId, LocalDateTime startTime, LocalDateTime endTime,
+                     double ticketPrice, String status) {
+        this.id = id;
+        this.movieId = movieId;
+        this.theaterId = theaterId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.ticketPrice = ticketPrice;
+        this.status = status;
+    }
 
     public int getId() {
         return id;
@@ -73,48 +78,4 @@ public class Showtime {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public Showtime() {
-    }
-
-    public String getMovieTitle() {
-        return movieTitle;
-    }
-
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getRating() {
-        return rating;
-    }
-
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
-
-    public int getDurationMinutes() {
-        return durationMinutes;
-    }
-
-    public void setDurationMinutes(int durationMinutes) {
-        this.durationMinutes = durationMinutes;
-    }
-
-    public String getTheaterName() {
-        return theaterName;
-    }
-
-    public void setTheaterName(String theaterName) {
-        this.theaterName = theaterName;
-    }
-
 }

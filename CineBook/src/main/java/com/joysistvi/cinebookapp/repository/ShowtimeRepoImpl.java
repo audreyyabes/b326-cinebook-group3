@@ -1,7 +1,8 @@
 package com.joysistvi.cinebookapp.repository;
 
-import com.joysistvi.cinebookapp.config.DBConnection;
+import com.joysistvi.cinebookapp.database.DatabaseConnection;
 import com.joysistvi.cinebookapp.model.Showtime;
+import com.joysistvi.cinebookapp.model.ShowtimeSchedule;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,179 +11,49 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShowtimeRepoImpl extends DBConnection implements ShowtimeRepo {
+public class ShowtimeRepoImpl implements ShowtimeRepo {
 
-    @Override
-    public List<Showtime> findAll() {
+    private final DatabaseConnection databaseConnection;
 
-        List<Showtime> showtimes = new ArrayList<>();
-
-        String sql = """
-                SELECT
-                    s.id,
-                    s.movie_id,
-                    s.theater_id,
-                    s.start_time,
-                    s.end_time,
-                    s.ticket_price,
-                    s.status,
-                    m.title AS movie_title,
-                    m.genre,
-                    m.rating,
-                    m.duration_minutes,
-                    t.name AS theater_name
-                FROM showtimes s
-                INNER JOIN movies m ON s.movie_id = m.id
-                INNER JOIN theaters t ON s.theater_id = t.id
-                WHERE s.status = 'scheduled'
-                AND m.status = 'active'
-                AND t.status = 'active'
-                ORDER BY s.start_time
-                """;
-
-        try (
-                Connection conn = connect();
-                PreparedStatement stmt = conn.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()
-        ) {
-
-            while (rs.next()) {
-
-                Showtime showtime = new Showtime();
-
-                showtime.setId(rs.getInt("id"));
-                showtime.setMovieId(rs.getInt("movie_id"));
-                showtime.setTheaterId(rs.getInt("theater_id"));
-
-                showtime.setStartTime(
-                        rs.getTimestamp("start_time").toLocalDateTime()
-                );
-
-                showtime.setEndTime(
-                        rs.getTimestamp("end_time").toLocalDateTime()
-                );
-
-                showtime.setTicketPrice(
-                        rs.getDouble("ticket_price")
-                );
-
-                showtime.setStatus(
-                        rs.getString("status")
-                );
-
-                showtime.setMovieTitle(
-                        rs.getString("movie_title")
-                );
-
-                showtime.setGenre(
-                        rs.getString("genre")
-                );
-
-                showtime.setRating(
-                        rs.getString("rating")
-                );
-
-                showtime.setDurationMinutes(
-                        rs.getInt("duration_minutes")
-                );
-
-                showtime.setTheaterName(
-                        rs.getString("theater_name")
-                );
-
-                showtimes.add(showtime);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return showtimes;
+    public ShowtimeRepoImpl() {
+        databaseConnection = new DatabaseConnection();
     }
 
     @Override
-    public List<Showtime> findByMovieId(int movieId) {
+    public List<ShowtimeSchedule> getShowtimesByMovieId(int movieId) {
 
-        List<Showtime> showtimes = new ArrayList<>();
+        List<ShowtimeSchedule> schedules = new ArrayList<>();
 
         String sql = """
-                SELECT
-                    s.id,
-                    s.movie_id,
-                    s.theater_id,
-                    s.start_time,
-                    s.end_time,
-                    s.ticket_price,
-                    s.status,
-                    m.title AS movie_title,
-                    m.genre,
-                    m.rating,
-                    m.duration_minutes,
-                    t.name AS theater_name
+                SELECT s.id,
+                       t.name AS theater_name,
+                       s.start_time,
+                       s.end_time,
+                       s.ticket_price
                 FROM showtimes s
-                INNER JOIN movies m ON s.movie_id = m.id
-                INNER JOIN theaters t ON s.theater_id = t.id
+                JOIN theaters t ON t.id = s.theater_id
                 WHERE s.movie_id = ?
-                AND s.status = 'scheduled'
-                AND m.status = 'active'
-                AND t.status = 'active'
+                  AND s.status = 'scheduled'
                 ORDER BY s.start_time
                 """;
 
-        try (
-                Connection conn = connect();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
+        try (Connection connection = databaseConnection.connect();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            stmt.setInt(1, movieId);
+            statement.setInt(1, movieId);
 
-            try (ResultSet rs = stmt.executeQuery()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
 
-                while (rs.next()) {
+                while (resultSet.next()) {
 
-                    Showtime showtime = new Showtime();
+                    ShowtimeSchedule schedule = new ShowtimeSchedule(
+                            resultSet.getInt("id"),
+                            resultSet.getString("theater_name"),
+                            resultSet.getTimestamp("start_time").toLocalDateTime(),
+                            resultSet.getTimestamp("end_time").toLocalDateTime(),
+                            resultSet.getDouble("ticket_price"));
 
-                    showtime.setId(rs.getInt("id"));
-                    showtime.setMovieId(rs.getInt("movie_id"));
-                    showtime.setTheaterId(rs.getInt("theater_id"));
-
-                    showtime.setStartTime(
-                            rs.getTimestamp("start_time").toLocalDateTime()
-                    );
-
-                    showtime.setEndTime(
-                            rs.getTimestamp("end_time").toLocalDateTime()
-                    );
-
-                    showtime.setTicketPrice(
-                            rs.getDouble("ticket_price")
-                    );
-
-                    showtime.setStatus(
-                            rs.getString("status")
-                    );
-
-                    showtime.setMovieTitle(
-                            rs.getString("movie_title")
-                    );
-
-                    showtime.setGenre(
-                            rs.getString("genre")
-                    );
-
-                    showtime.setRating(
-                            rs.getString("rating")
-                    );
-
-                    showtime.setDurationMinutes(
-                            rs.getInt("duration_minutes")
-                    );
-
-                    showtime.setTheaterName(
-                            rs.getString("theater_name")
-                    );
-
-                    showtimes.add(showtime);
+                    schedules.add(schedule);
                 }
             }
 
@@ -190,6 +61,69 @@ public class ShowtimeRepoImpl extends DBConnection implements ShowtimeRepo {
             e.printStackTrace();
         }
 
-        return showtimes;
+        return schedules;
+    }
+
+    @Override
+    public Showtime getShowtimeById(int id) {
+
+        String sql = """
+                SELECT id,
+                       movie_id,
+                       theater_id,
+                       start_time,
+                       end_time,
+                       ticket_price,
+                       status
+                FROM showtimes
+                WHERE id = ?
+                """;
+
+        try (Connection connection = databaseConnection.connect();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, id);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    return new Showtime(
+                            resultSet.getInt("id"),
+                            resultSet.getInt("movie_id"),
+                            resultSet.getInt("theater_id"),
+                            resultSet.getTimestamp("start_time").toLocalDateTime(),
+                            resultSet.getTimestamp("end_time").toLocalDateTime(),
+                            resultSet.getDouble("ticket_price"),
+                            resultSet.getString("status"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean create(Showtime showtime) {
+        String sql = """
+                INSERT INTO showtimes (movie_id, theater_id, start_time, end_time, ticket_price, status)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+
+        try (Connection connection = databaseConnection.connect();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, showtime.getMovieId());
+            statement.setInt(2, showtime.getTheaterId());
+            statement.setTimestamp(3, java.sql.Timestamp.valueOf(showtime.getStartTime()));
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(showtime.getEndTime()));
+            statement.setDouble(5, showtime.getTicketPrice());
+            statement.setString(6, showtime.getStatus());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
