@@ -18,6 +18,25 @@ public class BookingSeatsRepoImpl implements BookingSeatsRepo {
     }
 
     @Override
+    public boolean createBookingSeats(BookingSeats bookingSeats) {
+        String query = "INSERT INTO booking_seats (booking_id, seat_id, price) VALUES (?, ?, ?)";
+        try (Connection connection = databaseConnection.connect();
+             PreparedStatement prep = connection.prepareStatement(query)) {
+
+            prep.setInt(1, bookingSeats.getBookingId());
+            prep.setInt(2, bookingSeats.getSeat_id());
+            prep.setDouble(3, bookingSeats.getPrice());
+
+            int rows = prep.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Create Booking Seats Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
     public List<BookingSeats> getAllBookedSeats() {
         List<BookingSeats> bookingSeats = new ArrayList<>();
         String query = "SELECT * FROM booking_seats";

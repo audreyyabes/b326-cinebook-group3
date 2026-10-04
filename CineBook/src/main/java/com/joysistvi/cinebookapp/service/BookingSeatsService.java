@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface BookingSeatsService {
 
+    boolean createBookingSeats(BookingSeats bookingSeats);
+
     List<BookingSeats> getAllBookedSeats();
 
     boolean updateBookingSeats(BookingSeats bookingSeats);
